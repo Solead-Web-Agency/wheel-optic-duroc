@@ -14,9 +14,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const url = new URL(`${SUPABASE_URL}/rest/v1/shop_stock`);
     url.searchParams.set('shop_id', `eq.${shopId}`);
-    url.searchParams.set('select', 'segment_id,remaining,segments(title)');
-    // inner join segments
-    url.searchParams.set('segments', 'segments!inner(id)');
+    // Pas de jointure, on renvoie uniquement les restants; le front mappe les titres localement
+    url.searchParams.set('select', 'segment_id,remaining');
 
     const r = await fetch(url.toString(), {
       headers: {
@@ -31,8 +30,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(502).json({ error: 'Supabase error', detail: text });
     }
 
-    const rows: Array<{ segment_id: number; remaining: number; segments: { title: string } }> = await r.json();
-    const data = rows.map((row) => ({ id: row.segment_id, title: row.segments?.title, remaining: row.remaining }));
+    const rows: Array<{ segment_id: number; remaining: number }> = await r.json();
+    const data = rows.map((row) => ({ id: row.segment_id, remaining: row.remaining }));
     return res.status(200).json({ shopId, segments: data });
   } catch (e: any) {
     return res.status(500).json({ error: e?.message || 'Unknown error' });

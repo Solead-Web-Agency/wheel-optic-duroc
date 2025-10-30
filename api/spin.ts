@@ -25,13 +25,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       body: JSON.stringify({ p_shop: shopId, p_segment: segmentId }),
     });
 
-    const text = await r.text();
+    const contentType = r.headers.get('content-type') || '';
+    const payload = contentType.includes('application/json') ? await r.json() : await r.text();
+
     if (!r.ok) {
-      if (text.includes('OUT_OF_STOCK')) return res.status(409).json({ error: 'OUT_OF_STOCK' });
-      return res.status(502).json({ error: 'Supabase error', detail: text });
+      const msg = typeof payload === 'string' ? payload : JSON.stringify(payload);
+      if (msg.includes('OUT_OF_STOCK')) return res.status(409).json({ error: 'OUT_OF_STOCK' });
+      return res.status(502).json({ error: 'Supabase error', detail: msg });
     }
 
-    const newRemaining = Number(text);
+    const newRemaining = typeof payload === 'number' ? payload : Number((payload as any)?.decrement_stock ?? payload);
     return res.status(200).json({ remaining: newRemaining });
   } catch (e: any) {
     return res.status(500).json({ error: e?.message || 'Unknown error' });

@@ -244,34 +244,34 @@ export default function App() {
     localStorage.setItem('wheel-wins', JSON.stringify(wins));
   };
 
-  // Stock par boutique (via API, fallback local)
+  // Stock par boutique (via API, sans fallback local)
   const [stockById, setStockById] = useState<StockMap>({});
   useEffect(() => {
     let cancelled = false;
     (async () => {
+      const SUPA_URL = (import.meta as any).env.VITE_SUPABASE_URL || (import.meta as any).env.NEXT_PUBLIC_SUPABASE_URL;
+      const SUPA_ANON = (import.meta as any).env.VITE_SUPABASE_ANON_KEY || (import.meta as any).env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
       try {
-        const r = await fetch(`/api/stock?shopId=${encodeURIComponent(shopId)}`);
+        if (!SUPA_URL || !SUPA_ANON) throw new Error('missing supabase env');
+        const url = new URL(`${SUPA_URL}/rest/v1/shop_stock`);
+        url.searchParams.set('shop_id', `eq.${shopId}`);
+        url.searchParams.set('select', 'segment_id,remaining');
+        const r = await fetch(url.toString(), {
+          headers: { apikey: SUPA_ANON, Authorization: `Bearer ${SUPA_ANON}`, Accept: 'application/json' },
+        });
         if (!r.ok) throw new Error('stock api');
-        const data = await r.json();
+        const rows: Array<{ segment_id: number; remaining: number }> = await r.json();
         const next: StockMap = {};
-        (data.segments || []).forEach((s: any) => { next[s.id] = s.remaining; });
+        rows.forEach((s) => { next[s.segment_id] = s.remaining; });
         if (!cancelled) setStockById(next);
       } catch {
-        // fallback local
-        const saved = localStorage.getItem(`wheel-stock-${shopId}`);
-        if (saved) setStockById(JSON.parse(saved));
-        else {
-          setStockById(DEFAULT_STOCK);
-          localStorage.setItem(`wheel-stock-${shopId}`, JSON.stringify(DEFAULT_STOCK));
-        }
+        // pas de fallback local
+        setStockById({});
       }
     })();
     return () => { cancelled = true; };
   }, [shopId]);
-  const persistStock = (stock: StockMap) => {
-    // Garde un fallback local si l’API n’est pas encore branchée
-    localStorage.setItem(`wheel-stock-${shopId}`, JSON.stringify(stock));
-  };
+  const persistStock = (_stock: StockMap) => {};
 
   // Admin (toggle caché 4 clics coin haut droit)
   const [showAdminInterface, setShowAdminInterface] = useState(false);
@@ -362,32 +362,35 @@ export default function App() {
           persistWins(next);
           return next;
         });
-        // Décrémente en base (API) + fallback local si erreur
+        // Décrémente en base (Supabase direct) + fallback local si erreur
         (async () => {
+          const SUPA_URL = (import.meta as any).env.VITE_SUPABASE_URL || (import.meta as any).env.NEXT_PUBLIC_SUPABASE_URL;
+          const SUPA_ANON = (import.meta as any).env.VITE_SUPABASE_ANON_KEY || (import.meta as any).env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
           try {
-            const resp = await fetch('/api/spin', {
+            if (!SUPA_URL || !SUPA_ANON) throw new Error('missing supabase env');
+            const rpcUrl = `${SUPA_URL}/rest/v1/rpc/decrement_stock`;
+            const resp = await fetch(rpcUrl, {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ shopId, segmentId: selectedId }),
+              headers: {
+                apikey: SUPA_ANON,
+                Authorization: `Bearer ${SUPA_ANON}`,
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+              },
+              body: JSON.stringify({ p_shop: shopId, p_segment: selectedId }),
             });
             if (resp.status === 409) {
-              // out of stock: force 0
               setStockById((prev) => ({ ...prev, [selectedId]: 0 }));
             } else if (resp.ok) {
-              const { remaining } = await resp.json();
+              const contentType = resp.headers.get('content-type') || '';
+              const payload = contentType.includes('application/json') ? await resp.json() : await resp.text();
+              const remaining = typeof payload === 'number' ? payload : Number((payload as any)?.decrement_stock ?? payload);
               setStockById((prev) => ({ ...prev, [selectedId]: remaining }));
             } else {
               throw new Error('spin api');
             }
           } catch {
-            // fallback local si API KO
-            setStockById((prev) => {
-              const current = prev[selectedId] ?? 0;
-              const nextVal = Math.max(0, current - 1);
-              const next = { ...prev, [selectedId]: nextVal };
-              persistStock(next);
-              return next;
-            });
+            // pas de fallback local
           } finally {
             setLastWon(selectedSegment);
             setShowWinnerPopup(true);

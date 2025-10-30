@@ -1,0 +1,8 @@
+{
+  "buildCommand": "cd demo && npm run build",
+  "outputDirectory": "demo/dist",
+  "devCommand": "cd demo && vite",
+  "installCommand": "cd demo && npm install"
+}
+
+
