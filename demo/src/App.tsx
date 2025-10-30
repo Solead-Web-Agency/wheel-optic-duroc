@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import './index.css'
 
 // Types minimaux
@@ -12,6 +12,8 @@ interface WheelSegment {
 type Festival = 'francofolies' | 'goldencoast';
 
 type WinsMap = { [id: number]: number };
+
+type StockMap = { [id: number]: number };
 
 // Config couleurs + segments (sans stocks ni images)
 const festivalConfigs = {
@@ -39,6 +41,15 @@ const festivalConfigs = {
       { id: 3, title: 'SAC BANANE', color: '#42adce', textColor: '#FFFFFF' },
     ],
   },
+};
+
+const DEFAULT_STOCK: StockMap = { 1: 1500, 2: 350, 3: 300 };
+
+const getShopIdFromUrlOrStorage = (): string => {
+  const params = new URLSearchParams(window.location.search);
+  const fromUrl = params.get('shopId');
+  const fromStorage = localStorage.getItem('wheel-current-shop');
+  return fromUrl || fromStorage || 'shop-1';
 };
 
 // Roue canvas (style initial)
@@ -207,13 +218,23 @@ function SegmentedWheel({ segments, rotationAngle, festival }: {
 }
 
 export default function App() {
-  const [festival, setFestival] = useState<Festival>('goldencoast');
+  const [festival] = useState<Festival>('goldencoast');
   const [spinning, setSpinning] = useState(false);
   const [rotationAngle, setRotationAngle] = useState(0);
   const [showWinnerPopup, setShowWinnerPopup] = useState(false);
   const [lastWon, setLastWon] = useState<WheelSegment | null>(null);
 
-  // Comptage des gains par lot (persisté)
+  // Boutique courante
+  const [shopId, setShopId] = useState<string>(() => getShopIdFromUrlOrStorage());
+  useEffect(() => {
+    localStorage.setItem('wheel-current-shop', shopId);
+    const params = new URLSearchParams(window.location.search);
+    params.set('shopId', shopId);
+    const newUrl = `${window.location.pathname}?${params.toString()}`;
+    window.history.replaceState(null, '', newUrl);
+  }, [shopId]);
+
+  // Comptage des gains par lot (persisté toutes boutiques confondues)
   const [winsById, setWinsById] = useState<WinsMap>({});
   useEffect(() => {
     const saved = localStorage.getItem('wheel-wins');
@@ -221,6 +242,21 @@ export default function App() {
   }, []);
   const persistWins = (wins: WinsMap) => {
     localStorage.setItem('wheel-wins', JSON.stringify(wins));
+  };
+
+  // Stock par boutique
+  const [stockById, setStockById] = useState<StockMap>({});
+  useEffect(() => {
+    const saved = localStorage.getItem(`wheel-stock-${shopId}`);
+    if (saved) {
+      setStockById(JSON.parse(saved));
+    } else {
+      setStockById(DEFAULT_STOCK);
+      localStorage.setItem(`wheel-stock-${shopId}`, JSON.stringify(DEFAULT_STOCK));
+    }
+  }, [shopId]);
+  const persistStock = (stock: StockMap) => {
+    localStorage.setItem(`wheel-stock-${shopId}`, JSON.stringify(stock));
   };
 
   // Admin (toggle caché 4 clics coin haut droit)
@@ -240,11 +276,6 @@ export default function App() {
     }
   };
 
-  const changerFestival = (nouveau: Festival) => {
-    setFestival(nouveau);
-    setRotationAngle(0);
-  };
-
   const resetWheel = () => {
     setRotationAngle(0);
     setSpinning(false);
@@ -255,13 +286,21 @@ export default function App() {
     persistWins({});
   };
 
-  const getSegments = (): WheelSegment[] => festivalConfigs[festival].segments;
+  const resetStock = () => {
+    setStockById(DEFAULT_STOCK);
+    persistStock(DEFAULT_STOCK);
+  };
+
+  const baseSegments = festivalConfigs[festival].segments;
+  const availableSegments: WheelSegment[] = useMemo(() => {
+    return baseSegments.filter((s) => (stockById[s.id] ?? 0) > 0);
+  }, [baseSegments, stockById]);
 
   const spinWheel = () => {
     if (spinning) return;
     setSpinning(true);
 
-    const segments = getSegments();
+    const segments = availableSegments;
     if (segments.length === 0) {
       setSpinning(false);
       return;
@@ -303,10 +342,18 @@ export default function App() {
       if (progress < 1) requestAnimationFrame(animate);
       else setTimeout(() => {
         setSpinning(false);
-        // Incrémente le compteur de gains pour le lot sélectionné
+        // Incrémente le compteur de gains (global)
         setWinsById((prev) => {
           const next = { ...prev, [selectedId]: (prev[selectedId] || 0) + 1 };
           persistWins(next);
+          return next;
+        });
+        // Décrémente le stock pour la boutique
+        setStockById((prev) => {
+          const current = prev[selectedId] ?? 0;
+          const nextVal = Math.max(0, current - 1);
+          const next = { ...prev, [selectedId]: nextVal };
+          persistStock(next);
           return next;
         });
         setLastWon(selectedSegment);
@@ -356,7 +403,7 @@ export default function App() {
           }}
         >
           <SegmentedWheel
-            segments={getSegments()}
+            segments={availableSegments}
             rotationAngle={rotationAngle}
             festival={festival}
           />
@@ -438,14 +485,55 @@ export default function App() {
             padding: '12px',
             borderRadius: '10px',
             fontSize: '12px',
-            width: '240px',
+            width: '260px',
             zIndex: 1001,
           }}
         >
           <div style={{ fontWeight: 'bold', marginBottom: '8px' }}>⚙️ Admin</div>
-          <div style={{ marginBottom: '8px', fontWeight: 'bold' }}>📊 Gains</div>
+          <div style={{ marginBottom: '10px' }}>
+            <label style={{ color: '#ccc', fontSize: '11px', marginRight: '6px' }}>
+              Boutique:
+            </label>
+            <select
+              value={shopId}
+              onChange={(e) => setShopId(e.target.value)}
+              style={{
+                background: '#111',
+                color: '#fff',
+                border: '1px solid #444',
+                padding: '6px 8px',
+                borderRadius: '6px',
+              }}
+            >
+              {Array.from({ length: 55 }, (_, i) => `shop-${i + 1}`).map((id) => (
+                <option key={id} value={id}>
+                  {id}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div style={{ marginBottom: '8px', fontWeight: 'bold' }}>📦 Stock restant</div>
           <div style={{ display: 'grid', gap: '6px' }}>
-            {getSegments().map((s) => (
+            {baseSegments.map((s) => (
+              <div
+                key={s.id}
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  opacity: (stockById[s.id] ?? 0) > 0 ? 1 : 0.6,
+                }}
+              >
+                <span>{s.title}</span>
+                <span style={{ fontWeight: 'bold' }}>{stockById[s.id] ?? 0}</span>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ marginTop: '10px', fontWeight: 'bold' }}>📊 Gains (global)</div>
+          <div style={{ display: 'grid', gap: '6px' }}>
+            {baseSegments.map((s) => (
               <div
                 key={s.id}
                 style={{
@@ -492,9 +580,25 @@ export default function App() {
               🧹 Reset gains
             </button>
           </div>
+          <button
+            onClick={resetStock}
+            style={{
+              width: '100%',
+              marginTop: '8px',
+              background: 'linear-gradient(to right, #10b981, #047857)',
+              color: '#fff',
+              border: 'none',
+              padding: '8px 12px',
+              borderRadius: '8px',
+              cursor: 'pointer',
+              fontWeight: 'bold',
+            }}
+          >
+            ♻️ Reset stock boutique
+          </button>
 
           <button
-            onClick={() => setShowAdminInterface(false)}
+            onClick={() => setShowWinnerPopup(false) || setShowAdminInterface(false)}
             style={{
               width: '100%',
               background: '#333',
