@@ -598,7 +598,7 @@ export default function App() {
           </button>
 
           <button
-            onClick={() => setShowWinnerPopup(false) || setShowAdminInterface(false)}
+            onClick={() => { setShowWinnerPopup(false); setShowAdminInterface(false); }}
             style={{
               width: '100%',
               background: '#333',
