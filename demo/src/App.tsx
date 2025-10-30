@@ -244,18 +244,32 @@ export default function App() {
     localStorage.setItem('wheel-wins', JSON.stringify(wins));
   };
 
-  // Stock par boutique
+  // Stock par boutique (via API, fallback local)
   const [stockById, setStockById] = useState<StockMap>({});
   useEffect(() => {
-    const saved = localStorage.getItem(`wheel-stock-${shopId}`);
-    if (saved) {
-      setStockById(JSON.parse(saved));
-    } else {
-      setStockById(DEFAULT_STOCK);
-      localStorage.setItem(`wheel-stock-${shopId}`, JSON.stringify(DEFAULT_STOCK));
-    }
+    let cancelled = false;
+    (async () => {
+      try {
+        const r = await fetch(`/api/stock?shopId=${encodeURIComponent(shopId)}`);
+        if (!r.ok) throw new Error('stock api');
+        const data = await r.json();
+        const next: StockMap = {};
+        (data.segments || []).forEach((s: any) => { next[s.id] = s.remaining; });
+        if (!cancelled) setStockById(next);
+      } catch {
+        // fallback local
+        const saved = localStorage.getItem(`wheel-stock-${shopId}`);
+        if (saved) setStockById(JSON.parse(saved));
+        else {
+          setStockById(DEFAULT_STOCK);
+          localStorage.setItem(`wheel-stock-${shopId}`, JSON.stringify(DEFAULT_STOCK));
+        }
+      }
+    })();
+    return () => { cancelled = true; };
   }, [shopId]);
   const persistStock = (stock: StockMap) => {
+    // Garde un fallback local si l’API n’est pas encore branchée
     localStorage.setItem(`wheel-stock-${shopId}`, JSON.stringify(stock));
   };
 
@@ -348,16 +362,37 @@ export default function App() {
           persistWins(next);
           return next;
         });
-        // Décrémente le stock pour la boutique
-        setStockById((prev) => {
-          const current = prev[selectedId] ?? 0;
-          const nextVal = Math.max(0, current - 1);
-          const next = { ...prev, [selectedId]: nextVal };
-          persistStock(next);
-          return next;
-        });
-        setLastWon(selectedSegment);
-        setShowWinnerPopup(true);
+        // Décrémente en base (API) + fallback local si erreur
+        (async () => {
+          try {
+            const resp = await fetch('/api/spin', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ shopId, segmentId: selectedId }),
+            });
+            if (resp.status === 409) {
+              // out of stock: force 0
+              setStockById((prev) => ({ ...prev, [selectedId]: 0 }));
+            } else if (resp.ok) {
+              const { remaining } = await resp.json();
+              setStockById((prev) => ({ ...prev, [selectedId]: remaining }));
+            } else {
+              throw new Error('spin api');
+            }
+          } catch {
+            // fallback local si API KO
+            setStockById((prev) => {
+              const current = prev[selectedId] ?? 0;
+              const nextVal = Math.max(0, current - 1);
+              const next = { ...prev, [selectedId]: nextVal };
+              persistStock(next);
+              return next;
+            });
+          } finally {
+            setLastWon(selectedSegment);
+            setShowWinnerPopup(true);
+          }
+        })();
       }, 300);
     };
 
