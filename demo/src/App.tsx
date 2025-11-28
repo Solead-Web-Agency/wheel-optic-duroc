@@ -489,16 +489,20 @@ export default function App() {
         padding: '1rem',
         position: 'relative',
         minHeight: '100vh',
-        background: '#000000',
+        background: '#FFFFFF',
       }}
     >
       {/* Étape 1 : saisie de l'email */}
+      {/* Étape 1 : saisie de l'email (overlay uniquement sur la zone de la roue) */}
       {!emailValidated && (
         <div
           style={{
-            position: 'fixed',
-            inset: 0,
-            background: 'rgba(0,0,0,0.9)',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '480px',
+            height: '480px',
+            background: 'rgba(0,0,0,0.85)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -508,12 +512,12 @@ export default function App() {
           <div
             style={{
               background: 'linear-gradient(135deg, #1a1a1a, #2d2d2d)',
-              padding: '40px',
-              borderRadius: '20px',
+              padding: '24px',
+              borderRadius: '16px',
               color: '#fff',
               textAlign: 'center',
-              maxWidth: '500px',
-              margin: '16px',
+              width: '340px',
+              maxWidth: '90%',
               boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
               border: '2px solid #FFD700',
             }}
@@ -573,9 +577,12 @@ export default function App() {
       {emailValidated && showShopSelection && (
         <div
           style={{
-            position: 'fixed',
-            inset: 0,
-            background: 'rgba(0,0,0,0.9)',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '480px',
+            height: '480px',
+            background: 'rgba(0,0,0,0.85)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -585,12 +592,12 @@ export default function App() {
           <div
             style={{
               background: 'linear-gradient(135deg, #1a1a1a, #2d2d2d)',
-              padding: '40px',
-              borderRadius: '20px',
+              padding: '24px',
+              borderRadius: '16px',
               color: '#fff',
               textAlign: 'center',
-              maxWidth: '500px',
-              margin: '16px',
+              width: '340px',
+              maxWidth: '90%',
               boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
               border: '2px solid #FFD700',
             }}
@@ -687,7 +694,7 @@ export default function App() {
         title={`${clickCount}/4 clics pour ${showAdminInterface ? 'masquer' : 'activer'} le mode admin`}
       />
 
-      <div className="wheel-container" style={{ position: 'absolute', top: '20px', left: '20px' }}>
+      <div className="wheel-container" style={{ position: 'absolute', top: 0, left: 0 }}>
         {/* Bouton pour changer de boutique (visible pour tous) */}
         {emailValidated && !showShopSelection && shopId && (
           <button
@@ -956,9 +963,12 @@ export default function App() {
       {showWinnerPopup && lastWon && (
         <div
           style={{
-            position: 'fixed',
-            inset: 0,
-            background: 'rgba(0,0,0,0.9)',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '480px',
+            height: '520px',
+            background: 'rgba(0,0,0,0.85)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -968,12 +978,12 @@ export default function App() {
           <div
             style={{
               background: 'linear-gradient(135deg, #FFD700, #FFA500)',
-              padding: '32px',
+              padding: '24px',
               borderRadius: '16px',
               color: '#fff',
               textAlign: 'center',
-              maxWidth: '520px',
-              margin: '16px',
+              width: '380px',
+              maxWidth: '90%',
               boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
             }}
           >
