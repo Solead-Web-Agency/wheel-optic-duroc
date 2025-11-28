@@ -79,13 +79,6 @@ const festivalConfigs = {
 
 const DEFAULT_STOCK: StockMap = { 1: 1500, 2: 350, 3: 300 };
 
-const getShopIdFromUrlOrStorage = (): string => {
-  const params = new URLSearchParams(window.location.search);
-  const fromUrl = params.get('shopId');
-  const fromStorage = localStorage.getItem('wheel-current-shop');
-  return fromUrl || fromStorage || 'shop-1';
-};
-
 // Roue canvas (texte en long comme sur l'exemple)
 function SegmentedWheel({ segments, rotationAngle, festival }: {
   segments: WheelSegment[];
