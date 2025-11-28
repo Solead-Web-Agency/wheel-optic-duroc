@@ -16,6 +16,22 @@ type WinsMap = { [id: number]: number };
 type StockMap = { [id: number]: number };
 
 // Config couleurs + segments (sans stocks ni images)
+// Palette de couleurs pour 12 segments
+const segmentColors = [
+  '#ff503b', // Rouge
+  '#ffac44', // Orange
+  '#42adce', // Bleu
+  '#9b59b6', // Violet
+  '#2ecc71', // Vert
+  '#f39c12', // Jaune-orange
+  '#e74c3c', // Rouge foncé
+  '#3498db', // Bleu clair
+  '#1abc9c', // Turquoise
+  '#95a5a6', // Gris
+  '#e67e22', // Orange foncé
+  '#16a085', // Vert émeraude
+];
+
 const festivalConfigs = {
   francofolies: {
     colors: {
@@ -24,9 +40,18 @@ const festivalConfigs = {
       accent: '#42adce',
     },
     segments: [
-      { id: 1, title: 'BOB', color: '#ff503b', textColor: '#FFFFFF' },
-      { id: 2, title: 'BRUMISATEUR', color: '#ffac44', textColor: '#FFFFFF' },
-      { id: 3, title: 'SAC BANANE', color: '#42adce', textColor: '#FFFFFF' },
+      { id: 1, title: 'STYLO', color: segmentColors[0], textColor: '#FFFFFF' },
+      { id: 2, title: 'TOTE BAG', color: segmentColors[1], textColor: '#FFFFFF' },
+      { id: 3, title: 'TROUSSE VOYAGE', color: segmentColors[2], textColor: '#FFFFFF' },
+      { id: 4, title: 'CHARGEUR', color: segmentColors[3], textColor: '#FFFFFF' },
+      { id: 5, title: 'BAUME À LÈVRES', color: segmentColors[4], textColor: '#FFFFFF' },
+      { id: 6, title: 'PORTE CARTE', color: segmentColors[5], textColor: '#FFFFFF' },
+      { id: 7, title: 'SPRAY', color: segmentColors[6], textColor: '#FFFFFF' },
+      { id: 8, title: 'HAUT PARLEUR', color: segmentColors[7], textColor: '#FFFFFF' },
+      { id: 9, title: '10% DE RÉDUCTION', color: segmentColors[8], textColor: '#FFFFFF' },
+      { id: 10, title: 'RIEN', color: segmentColors[9], textColor: '#FFFFFF' },
+      { id: 11, title: 'CARTE DE JEU', color: segmentColors[10], textColor: '#FFFFFF' },
+      { id: 12, title: 'CHAINES A LUNETTES', color: segmentColors[11], textColor: '#FFFFFF' },
     ],
   },
   goldencoast: {
@@ -36,9 +61,18 @@ const festivalConfigs = {
       accent: '#42adce',
     },
     segments: [
-      { id: 1, title: 'BOB', color: '#ff503b', textColor: '#FFFFFF' },
-      { id: 2, title: 'BRUMISATEUR', color: '#ffac44', textColor: '#FFFFFF' },
-      { id: 3, title: 'SAC BANANE', color: '#42adce', textColor: '#FFFFFF' },
+      { id: 1, title: 'STYLO', color: segmentColors[0], textColor: '#FFFFFF' },
+      { id: 2, title: 'TOTE BAG', color: segmentColors[1], textColor: '#FFFFFF' },
+      { id: 3, title: 'TROUSSE VOYAGE', color: segmentColors[2], textColor: '#FFFFFF' },
+      { id: 4, title: 'CHARGEUR', color: segmentColors[3], textColor: '#FFFFFF' },
+      { id: 5, title: 'BAUME À LÈVRES', color: segmentColors[4], textColor: '#FFFFFF' },
+      { id: 6, title: 'PORTE CARTE', color: segmentColors[5], textColor: '#FFFFFF' },
+      { id: 7, title: 'SPRAY', color: segmentColors[6], textColor: '#FFFFFF' },
+      { id: 8, title: 'HAUT PARLEUR', color: segmentColors[7], textColor: '#FFFFFF' },
+      { id: 9, title: '10% DE RÉDUCTION', color: segmentColors[8], textColor: '#FFFFFF' },
+      { id: 10, title: 'RIEN', color: segmentColors[9], textColor: '#FFFFFF' },
+      { id: 11, title: 'CARTE DE JEU', color: segmentColors[10], textColor: '#FFFFFF' },
+      { id: 12, title: 'CHAINES A LUNETTES', color: segmentColors[11], textColor: '#FFFFFF' },
     ],
   },
 };
@@ -52,7 +86,7 @@ const getShopIdFromUrlOrStorage = (): string => {
   return fromUrl || fromStorage || 'shop-1';
 };
 
-// Roue canvas (style initial)
+// Roue canvas (texte en long comme sur l'exemple)
 function SegmentedWheel({ segments, rotationAngle, festival }: {
   segments: WheelSegment[];
   rotationAngle: number;
@@ -60,39 +94,6 @@ function SegmentedWheel({ segments, rotationAngle, festival }: {
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const config = festivalConfigs[festival];
-
-  const drawCurvedText = (
-    ctx: CanvasRenderingContext2D,
-    text: string,
-    x: number,
-    y: number,
-    startAngle: number,
-    textRadius: number
-  ) => {
-    const isLongText = text.length > 8;
-    const adjustedRadius = isLongText ? textRadius * 0.9 : textRadius;
-    const spacingMultiplier = isLongText ? 0.7 : 0.5;
-    const totalChars = text.length;
-    const segmentAngleRad = (115 * Math.PI) / 180;
-    const availableAngle = segmentAngleRad * 0.6;
-    const anglePerChar = (availableAngle / totalChars) * spacingMultiplier;
-
-    let currentAngle = startAngle - (anglePerChar * (totalChars - 1)) / 2;
-
-    for (let i = 0; i < text.length; i++) {
-      const char = text[i];
-      ctx.save();
-      ctx.translate(x, y);
-      ctx.rotate(currentAngle);
-      ctx.translate(adjustedRadius, 0);
-      ctx.rotate(Math.PI / 2);
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(char, 0, 0);
-      ctx.restore();
-      currentAngle += anglePerChar;
-    }
-  };
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -118,25 +119,13 @@ function SegmentedWheel({ segments, rotationAngle, festival }: {
     ctx.rotate((rotationAngle * Math.PI) / 180);
     ctx.translate(-centerX, -centerY);
 
-    const nombreSegments = segments.length;
-    const segmentAngles: number[] = [];
-    if (nombreSegments === 3) segmentAngles.push(120, 120, 120);
-    else if (nombreSegments === 2) segmentAngles.push(180, 180);
-    else if (nombreSegments === 1) segmentAngles.push(360);
-    else {
-      const angleParSegment = 360 / nombreSegments;
-      for (let i = 0; i < nombreSegments; i++) segmentAngles.push(angleParSegment);
-    }
-
-    let currentAngleDeg = -90;
+    const segmentAngle = (2 * Math.PI) / segments.length;
 
     segments.forEach((segment, index) => {
-      const segmentAngleDegrees = segmentAngles[index];
-      const segmentAngleRadians = (segmentAngleDegrees * Math.PI) / 180;
+      const startAngle = -Math.PI / 2 + index * segmentAngle;
+      const endAngle = startAngle + segmentAngle;
 
-      const startAngle = (currentAngleDeg * Math.PI) / 180;
-      const endAngle = startAngle + segmentAngleRadians;
-
+      // Quartier
       ctx.beginPath();
       ctx.moveTo(centerX, centerY);
       ctx.arc(centerX, centerY, radius, startAngle, endAngle);
@@ -148,19 +137,29 @@ function SegmentedWheel({ segments, rotationAngle, festival }: {
       ctx.lineWidth = 1;
       ctx.stroke();
 
+      // Texte en long dans le quartier (un seul bloc)
+      ctx.save();
+      ctx.translate(centerX, centerY);
+      ctx.rotate(startAngle + segmentAngle / 2);
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
       ctx.fillStyle = segment.textColor;
-      const isLongText = segment.title.length > 8;
-      ctx.font = isLongText ? 'bold 14px Arial' : 'bold 16px Arial';
-      drawCurvedText(
-        ctx,
-        segment.title,
-        centerX,
-        centerY,
-        startAngle + segmentAngleRadians / 2,
-        radius * 0.65
-      );
 
-      currentAngleDeg += segmentAngleDegrees;
+      // Taille de police auto pour tenir dans la largeur du quartier
+      const baseSize = 15;
+      let fontSize = baseSize;
+      ctx.font = `bold ${fontSize}px Arial`;
+      const textRadius = radius * 0.62; // encore un peu plus vers l'intérieur
+      const maxWidth = radius * 0.5;   // largeur max plus réduite
+      let width = ctx.measureText(segment.title).width;
+      if (width > maxWidth) {
+        const scale = maxWidth / width;
+        fontSize = Math.max(10, Math.floor(baseSize * scale));
+        ctx.font = `bold ${fontSize}px Arial`;
+      }
+
+      ctx.fillText(segment.title, textRadius, 0);
+      ctx.restore();
     });
 
     ctx.restore();
@@ -180,7 +179,7 @@ function SegmentedWheel({ segments, rotationAngle, festival }: {
       style={{
         width: '400px',
         height: '400px',
-        margin: '20px auto',
+        margin: 0,
         position: 'relative',
         display: 'flex',
         alignItems: 'center',
@@ -224,15 +223,103 @@ export default function App() {
   const [showWinnerPopup, setShowWinnerPopup] = useState(false);
   const [lastWon, setLastWon] = useState<WheelSegment | null>(null);
 
-  // Boutique courante
-  const [shopId, setShopId] = useState<string>(() => getShopIdFromUrlOrStorage());
-  useEffect(() => {
-    localStorage.setItem('wheel-current-shop', shopId);
-    const params = new URLSearchParams(window.location.search);
-    params.set('shopId', shopId);
-    const newUrl = `${window.location.pathname}?${params.toString()}`;
-    window.history.replaceState(null, '', newUrl);
-  }, [shopId]);
+  // Étape email (obligatoire avant la boutique)
+  const [email, setEmail] = useState<string>(() => {
+    const saved = localStorage.getItem('wheel-email');
+    return saved || '';
+  });
+  const [emailError, setEmailError] = useState<string | null>(null);
+  const [isCheckingEmail, setIsCheckingEmail] = useState(false);
+  const [emailValidated, setEmailValidated] = useState(false);
+
+  // Boutique courante - sélection obligatoire pour tous les joueurs
+  const [shopId, setShopId] = useState<string>(() => {
+    // Pré-remplit avec la boutique sauvegardée si elle existe, mais le modal reste visible
+    const saved = localStorage.getItem('wheel-current-shop');
+    const urlParam = new URLSearchParams(window.location.search).get('shopId');
+    if (urlParam && urlParam.startsWith('shop-')) {
+      return urlParam;
+    } else if (saved && saved.startsWith('shop-')) {
+      return saved;
+    }
+    return 'shop-1'; // Valeur par défaut pour le select
+  });
+  const [showShopSelection, setShowShopSelection] = useState<boolean>(false);
+  
+  // Ne ferme le modal que quand l'utilisateur valide explicitement
+  const handleShopValidation = () => {
+    if (shopId && shopId.startsWith('shop-')) {
+      localStorage.setItem('wheel-current-shop', shopId);
+      const params = new URLSearchParams(window.location.search);
+      params.set('shopId', shopId);
+      const newUrl = `${window.location.pathname}?${params.toString()}`;
+      window.history.replaceState(null, '', newUrl);
+      setShowShopSelection(false);
+    }
+  };
+
+  // Validation d'email côté Supabase (1 participation par email)
+  const handleEmailValidation = async () => {
+    setEmailError(null);
+    const trimmed = email.trim();
+    if (!trimmed) {
+      setEmailError('Merci de renseigner un email.');
+      return;
+    }
+    // Validation basique du format
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(trimmed)) {
+      setEmailError('Format d’email invalide.');
+      return;
+    }
+
+    const SUPA_URL = (import.meta as any).env.VITE_SUPABASE_URL || (import.meta as any).env.NEXT_PUBLIC_SUPABASE_URL;
+    const SUPA_ANON = (import.meta as any).env.VITE_SUPABASE_ANON_KEY || (import.meta as any).env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    if (!SUPA_URL || !SUPA_ANON) {
+      setEmailError('Configuration Supabase manquante.');
+      return;
+    }
+
+    try {
+      setIsCheckingEmail(true);
+      const resp = await fetch(`${SUPA_URL}/rest/v1/participants`, {
+        method: 'POST',
+        headers: {
+          apikey: SUPA_ANON,
+          Authorization: `Bearer ${SUPA_ANON}`,
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+          Prefer: 'return=minimal',
+        },
+        body: JSON.stringify({ email: trimmed }),
+      });
+
+      if (resp.status === 409) {
+        // Contrainte d'unicité violée -> email déjà utilisé
+        setEmailError('Cet email a déjà participé à la roue.');
+        setEmailValidated(false);
+        return;
+      }
+
+      if (!resp.ok) {
+        const txt = await resp.text();
+        console.error('Erreur API participants:', resp.status, txt);
+        setEmailError('Impossible de valider cet email pour le moment.');
+        setEmailValidated(false);
+        return;
+      }
+
+      // OK
+      localStorage.setItem('wheel-email', trimmed);
+      setEmailValidated(true);
+      setShowShopSelection(true);
+    } catch (e) {
+      console.error('Erreur réseau participants:', e);
+      setEmailError('Erreur réseau, merci de réessayer.');
+      setEmailValidated(false);
+    } finally {
+      setIsCheckingEmail(false);
+    }
+  };
 
   // Comptage des gains par lot (persisté toutes boutiques confondues)
   const [winsById, setWinsById] = useState<WinsMap>({});
@@ -311,7 +398,7 @@ export default function App() {
   }, [baseSegments, stockById]);
 
   const spinWheel = () => {
-    if (spinning) return;
+    if (spinning || !shopId || showShopSelection || !emailValidated) return;
     setSpinning(true);
 
     const segments = availableSegments;
@@ -362,7 +449,7 @@ export default function App() {
           persistWins(next);
           return next;
         });
-        // Décrémente en base (Supabase direct) + fallback local si erreur
+        // Décrémente en base (Supabase direct)
         (async () => {
           const SUPA_URL = (import.meta as any).env.VITE_SUPABASE_URL || (import.meta as any).env.NEXT_PUBLIC_SUPABASE_URL;
           const SUPA_ANON = (import.meta as any).env.VITE_SUPABASE_ANON_KEY || (import.meta as any).env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -410,11 +497,189 @@ export default function App() {
         position: 'relative',
         minHeight: '100vh',
         background: '#000000',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
       }}
     >
+      {/* Étape 1 : saisie de l'email */}
+      {!emailValidated && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0,0,0,0.9)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 2100,
+          }}
+        >
+          <div
+            style={{
+              background: 'linear-gradient(135deg, #1a1a1a, #2d2d2d)',
+              padding: '40px',
+              borderRadius: '20px',
+              color: '#fff',
+              textAlign: 'center',
+              maxWidth: '500px',
+              margin: '16px',
+              boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
+              border: '2px solid #FFD700',
+            }}
+          >
+            <h2 style={{ fontSize: '1.8rem', marginBottom: '12px', color: '#FFD700' }}>
+              Entrez votre email
+            </h2>
+            <p style={{ fontSize: '1rem', marginBottom: '20px', color: '#ccc' }}>
+              Un seul passage sur la roue par adresse email.
+            </p>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setEmailError(null);
+              }}
+              placeholder="vous@example.com"
+              style={{
+                width: '100%',
+                padding: '10px 14px',
+                borderRadius: '8px',
+                border: emailError ? '2px solid #ef4444' : '1px solid #444',
+                background: '#111',
+                color: '#fff',
+                marginBottom: '12px',
+              }}
+            />
+            {emailError && (
+              <div style={{ color: '#fca5a5', fontSize: '0.9rem', marginBottom: '12px' }}>
+                {emailError}
+              </div>
+            )}
+            <button
+              onClick={handleEmailValidation}
+              disabled={isCheckingEmail}
+              style={{
+                background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF6B35 100%)',
+                color: 'white',
+                border: 'none',
+                padding: '12px 28px',
+                borderRadius: '50px',
+                fontSize: '1.1rem',
+                fontWeight: 'bold',
+                cursor: isCheckingEmail ? 'wait' : 'pointer',
+                boxShadow: '0 8px 25px rgba(0, 0, 0, 0.3), 0 0 20px rgba(255, 215, 0, 0.5)',
+                transition: 'all 0.3s ease',
+                textShadow: '1px 1px 3px rgba(0,0,0,0.5)',
+                minWidth: '180px',
+                opacity: isCheckingEmail ? 0.7 : 1,
+              }}
+            >
+              {isCheckingEmail ? 'Vérification…' : 'Valider mon email'}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Étape 2 : sélection de boutique */}
+      {emailValidated && showShopSelection && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0,0,0,0.9)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 2000,
+          }}
+        >
+          <div
+            style={{
+              background: 'linear-gradient(135deg, #1a1a1a, #2d2d2d)',
+              padding: '40px',
+              borderRadius: '20px',
+              color: '#fff',
+              textAlign: 'center',
+              maxWidth: '500px',
+              margin: '16px',
+              boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
+              border: '2px solid #FFD700',
+            }}
+          >
+            <div style={{ fontSize: '48px', marginBottom: '20px' }}>Boutique</div>
+            <h2 style={{ fontSize: '1.8rem', marginBottom: '12px', color: '#FFD700' }}>
+              Sélectionnez votre boutique
+            </h2>
+            <p style={{ fontSize: '1rem', marginBottom: '24px', color: '#ccc' }}>
+              Choisissez la boutique sur laquelle vous participez
+            </p>
+            <select
+              value={shopId}
+              onChange={(e) => setShopId(e.target.value)}
+              style={{
+                width: '100%',
+                background: '#111',
+                color: '#fff',
+                border: '2px solid #FFD700',
+                padding: '12px 16px',
+                borderRadius: '10px',
+                fontSize: '1.1rem',
+                marginBottom: '24px',
+                cursor: 'pointer',
+                fontWeight: 'bold',
+              }}
+            >
+              {Array.from({ length: 55 }, (_, i) => {
+                const id = `shop-${i + 1}`;
+                return (
+                  <option key={id} value={id}>
+                    Boutique {i + 1}
+                  </option>
+                );
+              })}
+            </select>
+            <button
+              onClick={handleShopValidation}
+              disabled={!shopId}
+              style={{
+                background: shopId
+                  ? 'linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF6B35 100%)'
+                  : '#555',
+                color: 'white',
+                border: 'none',
+                padding: '14px 32px',
+                borderRadius: '50px',
+                fontSize: '1.1rem',
+                fontWeight: 'bold',
+                cursor: shopId ? 'pointer' : 'not-allowed',
+                boxShadow: shopId
+                  ? '0 8px 25px rgba(0, 0, 0, 0.3), 0 0 20px rgba(255, 215, 0, 0.5)'
+                  : 'none',
+                transition: 'all 0.3s ease',
+                textShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)',
+                minWidth: '180px',
+                opacity: shopId ? 1 : 0.6,
+              }}
+              onMouseOver={(e) => {
+                if (shopId) {
+                  e.currentTarget.style.transform = 'scale(1.05)';
+                  e.currentTarget.style.boxShadow =
+                    '0 12px 35px rgba(0, 0, 0, 0.4), 0 0 30px rgba(255, 215, 0, 0.8)';
+                }
+              }}
+              onMouseOut={(e) => {
+                if (shopId) {
+                  e.currentTarget.style.transform = 'scale(1)';
+                  e.currentTarget.style.boxShadow =
+                    '0 8px 25px rgba(0, 0, 0, 0.3), 0 0 20px rgba(255, 215, 0, 0.5)';
+                }
+              }}
+            >
+              Valider
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Zone cliquable invisible pour activer le mode admin */}
       <div
         onClick={handleCornerClick}
@@ -432,12 +697,43 @@ export default function App() {
         title={`${clickCount}/4 clics pour ${showAdminInterface ? 'masquer' : 'activer'} le mode admin`}
       />
 
-      <div className="wheel-container" style={{ position: 'relative' }}>
+      <div className="wheel-container" style={{ position: 'absolute', top: '20px', left: '20px' }}>
+        {/* Bouton pour changer de boutique (visible pour tous) */}
+        {emailValidated && !showShopSelection && shopId && (
+          <button
+            onClick={() => setShowShopSelection(true)}
+            style={{
+              display: 'block',
+              marginBottom: '10px',
+              background: 'linear-gradient(135deg, #3b82f6, #2563eb)',
+              color: '#fff',
+              border: 'none',
+              padding: '10px 16px',
+              borderRadius: '25px',
+              cursor: 'pointer',
+              fontWeight: 'bold',
+              fontSize: '0.9rem',
+              boxShadow: '0 4px 15px rgba(0, 0, 0, 0.3)',
+              transition: 'all 0.3s ease',
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.transform = 'scale(1.05)';
+              e.currentTarget.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.4)';
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.transform = 'scale(1)';
+              e.currentTarget.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.3)';
+            }}
+          >
+            {shopId.replace('shop-', 'Boutique ')}
+          </button>
+        )}
         <div
           style={{
             position: 'relative',
-            filter: !spinning ? 'brightness(0.9)' : 'none',
+            filter: !spinning || showShopSelection ? 'brightness(0.5)' : 'brightness(0.9)',
             transition: 'filter 0.3s ease',
+            pointerEvents: showShopSelection ? 'none' : 'auto',
           }}
         >
           <SegmentedWheel
@@ -450,6 +746,7 @@ export default function App() {
         {!spinning && (
           <button
             onClick={spinWheel}
+            disabled={!shopId || showShopSelection || !emailValidated}
             className="spin-button"
             style={{
               position: 'absolute',
@@ -458,33 +755,44 @@ export default function App() {
               transform: 'translate(-50%, -50%)',
               fontSize: '1.1rem',
               padding: '15px 25px',
-              background:
-                'linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF6B35 100%)',
+              background: !shopId || showShopSelection || !emailValidated
+                ? 'linear-gradient(135deg, #555 0%, #333 50%, #222 100%)'
+                : 'linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF6B35 100%)',
               color: 'white',
               border: 'none',
               borderRadius: '50px',
               fontWeight: 'bold',
-              cursor: 'pointer',
-              boxShadow:
-                '0 8px 25px rgba(0, 0, 0, 0.3), 0 0 20px rgba(255, 215, 0, 0.5)',
+              cursor: !shopId || showShopSelection || !emailValidated ? 'not-allowed' : 'pointer',
+              boxShadow: !shopId || showShopSelection || !emailValidated
+                ? 'none'
+                : '0 8px 25px rgba(0, 0, 0, 0.3), 0 0 20px rgba(255, 215, 0, 0.5)',
               zIndex: 10,
               transition: 'all 0.3s ease',
               textShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)',
               minWidth: '180px',
+              opacity: !shopId || showShopSelection || !emailValidated ? 0.6 : 1,
             }}
             onMouseOver={(e) => {
-              e.currentTarget.style.transform =
-                'translate(-50%, -50%) scale(1.1)';
-              e.currentTarget.style.boxShadow =
-                '0 12px 35px rgba(0, 0, 0, 0.4), 0 0 30px rgba(255, 215, 0, 0.8)';
+              if (shopId && !showShopSelection && emailValidated) {
+                e.currentTarget.style.transform =
+                  'translate(-50%, -50%) scale(1.1)';
+                e.currentTarget.style.boxShadow =
+                  '0 12px 35px rgba(0, 0, 0, 0.4), 0 0 30px rgba(255, 215, 0, 0.8)';
+              }
             }}
             onMouseOut={(e) => {
-              e.currentTarget.style.transform = 'translate(-50%, -50%) scale(1)';
-              e.currentTarget.style.boxShadow =
-                '0 8px 25px rgba(0, 0, 0, 0.3), 0 0 20px rgba(255, 215, 0, 0.5)';
+              if (shopId && !showShopSelection && emailValidated) {
+                e.currentTarget.style.transform = 'translate(-50%, -50%) scale(1)';
+                e.currentTarget.style.boxShadow =
+                  '0 8px 25px rgba(0, 0, 0, 0.3), 0 0 20px rgba(255, 215, 0, 0.5)';
+              }
             }}
           >
-            🎯 TENTER SA CHANCE
+            {!emailValidated
+              ? 'Entrez votre email'
+              : !shopId || showShopSelection
+              ? 'Sélectionnez une boutique'
+              : 'TENTER SA CHANCE'}
           </button>
         )}
 
@@ -506,7 +814,7 @@ export default function App() {
               boxShadow: '0 8px 25px rgba(0, 0, 0, 0.5)',
             }}
           >
-            🎯 Tirage en cours...
+            Tirage en cours...
           </div>
         )}
       </div>
@@ -527,7 +835,7 @@ export default function App() {
             zIndex: 1001,
           }}
         >
-          <div style={{ fontWeight: 'bold', marginBottom: '8px' }}>⚙️ Admin</div>
+          <div style={{ fontWeight: 'bold', marginBottom: '8px' }}>Admin</div>
           <div style={{ marginBottom: '10px' }}>
             <label style={{ color: '#ccc', fontSize: '11px', marginRight: '6px' }}>
               Boutique:
@@ -551,7 +859,7 @@ export default function App() {
             </select>
           </div>
 
-          <div style={{ marginBottom: '8px', fontWeight: 'bold' }}>📦 Stock restant</div>
+          <div style={{ marginBottom: '8px', fontWeight: 'bold' }}>Stock restant</div>
           <div style={{ display: 'grid', gap: '6px' }}>
             {baseSegments.map((s) => (
               <div
@@ -569,7 +877,7 @@ export default function App() {
             ))}
           </div>
 
-          <div style={{ marginTop: '10px', fontWeight: 'bold' }}>📊 Gains (global)</div>
+          <div style={{ marginTop: '10px', fontWeight: 'bold' }}>Gains (global)</div>
           <div style={{ display: 'grid', gap: '6px' }}>
             {baseSegments.map((s) => (
               <div
@@ -600,7 +908,7 @@ export default function App() {
                 flex: 1,
               }}
             >
-              🔄 Reset roue
+              Reset roue
             </button>
             <button
               onClick={resetWins}
@@ -615,7 +923,7 @@ export default function App() {
                 flex: 1,
               }}
             >
-              🧹 Reset gains
+              Reset gains
             </button>
           </div>
           <button
@@ -632,7 +940,7 @@ export default function App() {
               fontWeight: 'bold',
             }}
           >
-            ♻️ Reset stock boutique
+            Reset stock boutique
           </button>
 
           <button
@@ -649,7 +957,7 @@ export default function App() {
               marginTop: '8px',
             }}
           >
-            👁️ Masquer
+            Masquer
           </button>
         </div>
       )}
@@ -679,7 +987,7 @@ export default function App() {
               boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
             }}
           >
-            <div style={{ fontSize: '56px', marginBottom: '16px' }}>🎉</div>
+            <div style={{ fontSize: '56px', marginBottom: '16px' }}>Gagné</div>
             <h2 style={{ fontSize: '2rem', marginBottom: '12px' }}>Félicitations !</h2>
             <p style={{ fontSize: '1.2rem', marginBottom: '20px' }}>Vous avez gagné :</p>
             <div
@@ -692,10 +1000,20 @@ export default function App() {
                 fontSize: '1.5rem',
               }}
             >
-              🏆 {lastWon.title}
+              {lastWon.title}
             </div>
             <button
-              onClick={() => setShowWinnerPopup(false)}
+              onClick={() => {
+                setShowWinnerPopup(false);
+                // On revient à l'étape email pour le participant suivant
+                setEmail('');
+                localStorage.removeItem('wheel-email');
+                setEmailValidated(false);
+                // On réinitialise la boutique sélectionnée
+                setShopId('shop-1');
+                localStorage.removeItem('wheel-current-shop');
+                setShowShopSelection(false);
+              }}
               style={{
                 background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF6B35 100%)',
                 color: 'white',
