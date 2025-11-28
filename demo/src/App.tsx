@@ -521,9 +521,6 @@ export default function App() {
             <h2 style={{ fontSize: '1.8rem', marginBottom: '12px', color: '#FFD700' }}>
               Entrez votre email
             </h2>
-            <p style={{ fontSize: '1rem', marginBottom: '20px', color: '#ccc' }}>
-              Un seul passage sur la roue par adresse email.
-            </p>
             <input
               type="email"
               value={email}
