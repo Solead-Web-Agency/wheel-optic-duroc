@@ -1,4 +1,3 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node';
 import nodemailer from 'nodemailer';
 
 const SUPABASE_URL = process.env.SUPABASE_URL as string;
@@ -13,7 +12,8 @@ const FROM_EMAIL = process.env.FROM_EMAIL || 'noreply@opticduroc.com';
 const FROM_NAME = process.env.FROM_NAME || 'Roue de la Fortune - Optic Duroc';
 const TEST_EMAIL = process.env.TEST_EMAIL || ''; // Si défini, tous les emails vont ici (mode test)
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+// On tape req/res en any pour éviter d'ajouter la dépendance @vercel/node
+export default async function handler(req: any, res: any) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
