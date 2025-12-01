@@ -74,11 +74,10 @@ export default async function handler(req: any, res: any) {
       }
     }
 
-    // 3. Récupérer le stock restant pour ce lot dans cette boutique
+    // 3. Récupérer le stock restant pour TOUS les lots de cette boutique
     const stockUrl = new URL(`${SUPABASE_URL}/rest/v1/shop_stock`);
     stockUrl.searchParams.set('shop_id', `eq.${shopId}`);
-    stockUrl.searchParams.set('segment_id', `eq.${segmentId}`);
-    stockUrl.searchParams.set('select', 'remaining');
+    stockUrl.searchParams.set('select', 'segment_id,remaining');
 
     const stockResponse = await fetch(stockUrl.toString(), {
       headers: {
@@ -88,11 +87,30 @@ export default async function handler(req: any, res: any) {
       },
     });
 
-    let stockRemaining = 0;
+    const segmentLabels: Record<number, string> = {
+      1: 'STYLO',
+      2: 'TOTE BAG',
+      3: 'TROUSSE VOYAGE',
+      4: 'CHARGEUR',
+      5: 'BAUME À LÈVRES',
+      6: 'PORTE CARTE',
+      7: 'SPRAY',
+      8: 'HAUT PARLEUR',
+      9: 'CHAINETTES',
+      10: 'MASQUE',
+      11: 'ETUIS SOUPLE',
+    };
+
+    let stockPerSegment: Array<{ segment_id: number; remaining: number }> = [];
+    let stockRemainingForWon = 0;
     if (stockResponse.ok) {
       const stockData = await stockResponse.json();
-      if (stockData && stockData.length > 0) {
-        stockRemaining = stockData[0].remaining || 0;
+      if (Array.isArray(stockData)) {
+        stockPerSegment = stockData;
+        const found = stockData.find((row: any) => row.segment_id === segmentId);
+        if (found) {
+          stockRemainingForWon = found.remaining || 0;
+        }
       }
     }
 
@@ -129,6 +147,8 @@ export default async function handler(req: any, res: any) {
           .info-box p { margin: 8px 0; }
           .highlight { color: #ff6b35; font-weight: bold; }
           .stock-info { background: #e8f5e9; padding: 10px; border-radius: 5px; margin-top: 15px; }
+          .stock-info ul { margin: 8px 0 0 18px; padding: 0; }
+          .stock-info li { margin: 3px 0; }
           .footer { text-align: center; margin-top: 20px; color: #666; font-size: 0.9em; }
         </style>
       </head>
@@ -161,7 +181,17 @@ export default async function handler(req: any, res: any) {
             <p>Le client se présentera prochainement en magasin pour le récupérer, avec présentation du mail garant.</p>
             
             <div class="stock-info">
-              <p><strong>📦 Stock disponible pour ce lot :</strong> ${stockRemaining} unité(s) restante(s)</p>
+              <p><strong>📦 Stock disponible dans votre boutique (par lot) :</strong></p>
+              <ul>
+                ${
+                  stockPerSegment
+                    .map(
+                      (row) =>
+                        `<li>${segmentLabels[row.segment_id] || `Lot ${row.segment_id}`} : <strong>${row.remaining}</strong> unité(s)</li>`
+                    )
+                    .join('')
+                }
+              </ul>
             </div>
             
             <p style="margin-top: 30px;">Bonne journée,<br><strong>L'équipe Optic Duroc</strong></p>
@@ -189,7 +219,13 @@ Merci de bien vouloir mettre le cadeau de côté.
 
 Le client se présentera prochainement en magasin pour le récupérer, avec présentation du mail garant.
 
-Stock disponible pour ce lot : ${stockRemaining} unité(s) restante(s)
+Stocks disponibles dans votre boutique (par lot) :
+${stockPerSegment
+  .map(
+    (row) =>
+      `- ${segmentLabels[row.segment_id] || `Lot ${row.segment_id}`} : ${row.remaining} unité(s)`
+  )
+  .join('\n')}
 
 Bonne journée,
 L'équipe Optic Duroc
