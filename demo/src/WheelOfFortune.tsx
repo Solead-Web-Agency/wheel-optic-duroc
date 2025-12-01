@@ -35,7 +35,7 @@ const WheelOfFortune: React.FC<WheelOfFortuneProps> = (
       stop3: "#FFC400",
       stop4: "#FFB800",
       stop5: "#FF9E00",
-    },
+    }, 
     innerCircleColorGradients = {
       stop1: "#FFFFFF",
       stop2: "#FFF9C4",
