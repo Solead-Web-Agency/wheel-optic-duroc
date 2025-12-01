@@ -15,8 +15,67 @@ type WinsMap = { [id: number]: number };
 
 type StockMap = { [id: number]: number };
 
+// Mapping des noms de boutiques
+const shopNames: { [key: string]: string } = {
+  'shop-1': 'OPTIC DUROC PARIS 7 SÈVRES',
+  'shop-2': 'OPTIC DUROC PARIS 11 VOLTAIRE',
+  'shop-3': 'OPTIC DUROC REIMS',
+  'shop-4': 'OPTIC DUROC STRASBOURG',
+  'shop-5': 'OPTIC DUROC METZ',
+  'shop-6': 'OPTIC DUROC PARIS 7 MOTTE PICQUET',
+  'shop-7': 'OPTIC DUROC AIX EN PROVENCE',
+  'shop-8': 'OPTIC DUROC TOULOUSE',
+  'shop-9': 'OPTIC DUROC PARIS 11 OBERKAMPF',
+  'shop-10': 'OPTIC DUROC MONTROUGE',
+  'shop-11': 'OPTIC DUROC PARIS 08 BOETIE',
+  'shop-12': 'OPTIC DUROC SAINT MAUR DES FOSSÉS',
+  'shop-13': 'OPTIC DUROC NEUILLY SUR SEINE',
+  'shop-14': 'OPTIC DUROC PARIS 14',
+  'shop-15': 'OPTIC DUROC CAEN THEATRE',
+  'shop-16': 'DUROC AUDITION NEUILLY SUR SEINE',
+  'shop-17': 'OPTIC DUROC CHARENTON LE PONT',
+  'shop-18': 'DUROC AUDITION MAISON LAFFITTE',
+  'shop-19': 'OPTIC DUROC DIJON',
+  'shop-20': 'OPTIC DUROC MULHOUSE',
+  'shop-21': 'OPTIC DUROC VERSAILLES',
+  'shop-22': 'OPTIC DUROC LES LILAS',
+  'shop-23': 'OPTIC DUROC DREUX',
+  'shop-24': 'OPTIC DUROC EVREUX',
+  'shop-25': 'OPTIC DUROC MONTPELLIER',
+  'shop-26': 'OPTIC DUROC NIMES',
+  'shop-27': 'OPTIC DUROC ST CLEMENT - SENS',
+  'shop-28': 'OPTIC DUROC PARIS 18',
+  'shop-29': 'OPTIC DUROC LYON',
+  'shop-30': 'OPTIC DUROC PARIS 10',
+  'shop-31': 'OPTIC DUROC COLMAR',
+  'shop-32': 'OPTIC DUROC PARIS 11 REPUBLIQUE',
+  'shop-33': 'OPTIC DUROC CHAVILLE',
+  'shop-34': 'OPTIC DUROC LEVALLOIS PERRET',
+  'shop-35': 'OPTIC DUROC CLAMART',
+  'shop-36': 'OPTIC DUROC ASNIERES',
+  'shop-37': 'OPTIC DUROC PARIS 16',
+  'shop-38': 'OPTIC DUROC PARIS 17 NIEL',
+  'shop-39': 'OPTIC DUROC DAMMARIE LES LYS',
+  'shop-40': 'OPTIC DUROC BOULOGNE BILLANCOURT',
+  'shop-41': 'OPTIC DUROC ST NAZAIRE',
+  'shop-42': 'OPTIC DUROC PARIS 17 CLICHY',
+  'shop-43': 'OPTIC DUROC TREMBLAY',
+  'shop-44': 'OPTIC DUROC PARIS 15',
+  'shop-45': 'OPTIC DUROC SAINT CYR',
+  'shop-46': 'OPTIC DUROC PARIS 19',
+  'shop-47': 'OPTIC DUROC NOYELLES',
+  'shop-48': 'OPTIC DUROC PARIS 2',
+  'shop-49': 'OPTIC DUROC LE RAINCY',
+  'shop-50': 'OPTIC DUROC ISTRES',
+  'shop-51': 'OPTIC DUROC Saint-Germain-en-Laye',
+  'shop-52': 'OPTIC DUROC MOULINS LES METZ',
+  'shop-53': 'OPTIC DUROC PARIS 12',
+  'shop-54': 'OPTIC DUROC VERNON',
+  'shop-55': 'DUROC AUDITION MAGNY',
+};
+
 // Config couleurs + segments (sans stocks ni images)
-// Palette de couleurs pour 12 segments
+// Palette de couleurs pour 11 segments
 const segmentColors = [
   '#ff503b', // Rouge
   '#ffac44', // Orange
@@ -27,7 +86,6 @@ const segmentColors = [
   '#e74c3c', // Rouge foncé
   '#3498db', // Bleu clair
   '#1abc9c', // Turquoise
-  '#95a5a6', // Gris
   '#e67e22', // Orange foncé
   '#16a085', // Vert émeraude
 ];
@@ -48,10 +106,9 @@ const festivalConfigs = {
       { id: 6, title: 'PORTE CARTE', color: segmentColors[5], textColor: '#FFFFFF' },
       { id: 7, title: 'SPRAY', color: segmentColors[6], textColor: '#FFFFFF' },
       { id: 8, title: 'HAUT PARLEUR', color: segmentColors[7], textColor: '#FFFFFF' },
-      { id: 9, title: '10% DE RÉDUCTION', color: segmentColors[8], textColor: '#FFFFFF' },
-      { id: 10, title: 'RIEN', color: segmentColors[9], textColor: '#FFFFFF' },
-      { id: 11, title: 'CARTE DE JEU', color: segmentColors[10], textColor: '#FFFFFF' },
-      { id: 12, title: 'CHAINES A LUNETTES', color: segmentColors[11], textColor: '#FFFFFF' },
+      { id: 9, title: 'CHAINETTES', color: segmentColors[8], textColor: '#FFFFFF' },
+      { id: 10, title: 'MASQUE', color: segmentColors[9], textColor: '#FFFFFF' },
+      { id: 11, title: 'ETUIS SOUPLE', color: segmentColors[10], textColor: '#FFFFFF' },
     ],
   },
   goldencoast: {
@@ -69,10 +126,9 @@ const festivalConfigs = {
       { id: 6, title: 'PORTE CARTE', color: segmentColors[5], textColor: '#FFFFFF' },
       { id: 7, title: 'SPRAY', color: segmentColors[6], textColor: '#FFFFFF' },
       { id: 8, title: 'HAUT PARLEUR', color: segmentColors[7], textColor: '#FFFFFF' },
-      { id: 9, title: '10% DE RÉDUCTION', color: segmentColors[8], textColor: '#FFFFFF' },
-      { id: 10, title: 'RIEN', color: segmentColors[9], textColor: '#FFFFFF' },
-      { id: 11, title: 'CARTE DE JEU', color: segmentColors[10], textColor: '#FFFFFF' },
-      { id: 12, title: 'CHAINES A LUNETTES', color: segmentColors[11], textColor: '#FFFFFF' },
+      { id: 9, title: 'CHAINETTES', color: segmentColors[8], textColor: '#FFFFFF' },
+      { id: 10, title: 'MASQUE', color: segmentColors[9], textColor: '#FFFFFF' },
+      { id: 11, title: 'ETUIS SOUPLE', color: segmentColors[10], textColor: '#FFFFFF' },
     ],
   },
 };
@@ -217,6 +273,14 @@ export default function App() {
   const [lastWon, setLastWon] = useState<WheelSegment | null>(null);
 
   // Étape email (obligatoire avant la boutique)
+  const [firstName, setFirstName] = useState<string>(() => {
+    const saved = localStorage.getItem('wheel-firstName');
+    return saved || '';
+  });
+  const [lastName, setLastName] = useState<string>(() => {
+    const saved = localStorage.getItem('wheel-lastName');
+    return saved || '';
+  });
   const [email, setEmail] = useState<string>(() => {
     const saved = localStorage.getItem('wheel-email');
     return saved || '';
@@ -254,14 +318,25 @@ export default function App() {
   // Validation d'email côté Supabase (1 participation par email)
   const handleEmailValidation = async () => {
     setEmailError(null);
-    const trimmed = email.trim();
-    if (!trimmed) {
+    const trimmedFirstName = firstName.trim();
+    const trimmedLastName = lastName.trim();
+    const trimmedEmail = email.trim();
+    
+    if (!trimmedFirstName) {
+      setEmailError('Merci de renseigner votre prénom.');
+      return;
+    }
+    if (!trimmedLastName) {
+      setEmailError('Merci de renseigner votre nom.');
+      return;
+    }
+    if (!trimmedEmail) {
       setEmailError('Merci de renseigner un email.');
       return;
     }
     // Validation basique du format
-    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(trimmed)) {
-      setEmailError('Format d’email invalide.');
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(trimmedEmail)) {
+      setEmailError("Format d'email invalide.");
       return;
     }
 
@@ -283,7 +358,11 @@ export default function App() {
           Accept: 'application/json',
           Prefer: 'return=minimal',
         },
-        body: JSON.stringify({ email: trimmed }),
+        body: JSON.stringify({ 
+          first_name: trimmedFirstName,
+          last_name: trimmedLastName,
+          email: trimmedEmail 
+        }),
       });
 
       if (resp.status === 409) {
@@ -302,7 +381,9 @@ export default function App() {
       }
 
       // OK
-      localStorage.setItem('wheel-email', trimmed);
+      localStorage.setItem('wheel-firstName', trimmedFirstName);
+      localStorage.setItem('wheel-lastName', trimmedLastName);
+      localStorage.setItem('wheel-email', trimmedEmail);
       setEmailValidated(true);
       setShowShopSelection(true);
     } catch (e) {
@@ -474,6 +555,25 @@ export default function App() {
           } finally {
             setLastWon(selectedSegment);
             setShowWinnerPopup(true);
+            
+            // Envoyer un email à la boutique
+            (async () => {
+              try {
+                await fetch('/api/notify-win', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    shopId,
+                    segmentId: selectedSegment.id,
+                    segmentTitle: selectedSegment.title,
+                    userEmail: email,
+                  }),
+                });
+              } catch (err) {
+                console.error('Erreur envoi email:', err);
+                // On ne bloque pas l'UX si l'email échoue
+              }
+            })();
           }
         })();
       }, 300);
@@ -523,8 +623,44 @@ export default function App() {
             }}
           >
             <h2 style={{ fontSize: '1.8rem', marginBottom: '12px', color: '#FFD700' }}>
-              Entrez votre email
+              Vos informations
             </h2>
+            <input
+              type="text"
+              value={firstName}
+              onChange={(e) => {
+                setFirstName(e.target.value);
+                setEmailError(null);
+              }}
+              placeholder="Prénom"
+              style={{
+                width: '100%',
+                padding: '10px 14px',
+                borderRadius: '8px',
+                border: emailError ? '2px solid #ef4444' : '1px solid #444',
+                background: '#111',
+                color: '#fff',
+                marginBottom: '12px',
+              }}
+            />
+            <input
+              type="text"
+              value={lastName}
+              onChange={(e) => {
+                setLastName(e.target.value);
+                setEmailError(null);
+              }}
+              placeholder="Nom"
+              style={{
+                width: '100%',
+                padding: '10px 14px',
+                borderRadius: '8px',
+                border: emailError ? '2px solid #ef4444' : '1px solid #444',
+                background: '#111',
+                color: '#fff',
+                marginBottom: '12px',
+              }}
+            />
             <input
               type="email"
               value={email}
@@ -532,7 +668,7 @@ export default function App() {
                 setEmail(e.target.value);
                 setEmailError(null);
               }}
-              placeholder="vous@example.com"
+              placeholder="Email"
               style={{
                 width: '100%',
                 padding: '10px 14px',
@@ -567,7 +703,7 @@ export default function App() {
                 opacity: isCheckingEmail ? 0.7 : 1,
               }}
             >
-              {isCheckingEmail ? 'Vérification…' : 'Valider mon email'}
+              {isCheckingEmail ? 'Vérification…' : 'Valider'}
             </button>
           </div>
         </div>
@@ -629,7 +765,7 @@ export default function App() {
                 const id = `shop-${i + 1}`;
                 return (
                   <option key={id} value={id}>
-                    Boutique {i + 1}
+                    {shopNames[id] || `Boutique ${i + 1}`}
                   </option>
                 );
               })}
@@ -722,7 +858,7 @@ export default function App() {
               e.currentTarget.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.3)';
             }}
           >
-            {shopId.replace('shop-', 'Boutique ')}
+            {shopNames[shopId] || shopId.replace('shop-', 'Boutique ')}
           </button>
         )}
         <div
@@ -1006,7 +1142,11 @@ export default function App() {
               onClick={() => {
                 setShowWinnerPopup(false);
                 // On revient à l'étape email pour le participant suivant
+                setFirstName('');
+                setLastName('');
                 setEmail('');
+                localStorage.removeItem('wheel-firstName');
+                localStorage.removeItem('wheel-lastName');
                 localStorage.removeItem('wheel-email');
                 setEmailValidated(false);
                 // On réinitialise la boutique sélectionnée
