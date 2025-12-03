@@ -8,6 +8,78 @@ const DIALOG_MESSAGE_ID_WHEEL = parseInt(process.env.DIALOG_MESSAGE_ID_WHEEL || 
 
 const DIALOG_API_BASE = 'https://app.mydialoginsight.com/webservices/ofc4';
 
+// Fonction pour récupérer un contact par email
+async function contactsGet(email: string): Promise<{ Success: boolean; Records?: Array<{ idContact: number }>; ErrorCode?: any; ErrorMessage?: any }> {
+  const response = await fetch(`${DIALOG_API_BASE}/contacts.ashx?method=Get`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      AuthKey: {
+        idKey: parseInt(DIALOG_IDKEY),
+        Key: DIALOG_KEY,
+      },
+      idProject: DIALOG_PROJECT_ID,
+      Clause: {
+        $type: 'FieldClause',
+        Field: {
+          Name: 'f_EMail',
+        },
+        TypeOperator: 'Equal',
+        ComparisonValue: email,
+      },
+      Tag: null,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Dialog Insight API error: ${response.status}`);
+  }
+
+  return await response.json();
+}
+
+// Fonction pour créer/mettre à jour un contact
+async function contactsMerge(email: string, firstName: string, lastName: string): Promise<{ Success: boolean; Records?: Array<{ IdRecord: number }>; ErrorCode?: any; ErrorMessage?: any }> {
+  const response = await fetch(`${DIALOG_API_BASE}/contacts.ashx?method=Merge`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      AuthKey: {
+        idKey: parseInt(DIALOG_IDKEY),
+        Key: DIALOG_KEY,
+      },
+      idProject: DIALOG_PROJECT_ID,
+      Records: [
+        {
+          ID: {
+            key_f_EMail: email,
+          },
+          Data: {
+            f_EMail: email,
+            f_FirstName: firstName,
+            f_LastName: lastName,
+          },
+        },
+      ],
+      MergeOptions: {
+        AllowInsert: true,
+        AllowUpdate: true,
+        SkipDuplicateRecords: false,
+        SkipUnmatchedRecords: false,
+        ReturnRecordsOnSuccess: false,
+        ReturnRecordsOnError: false,
+        FieldOptions: null,
+      },
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Dialog Insight API error: ${response.status}`);
+  }
+
+  return await response.json();
+}
+
 // Fonction pour envoyer un email via Dialog Insight (SendSingle2)
 async function sendingsSendSingle2(
   idContact: number,
