@@ -150,7 +150,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             <p><strong>Merci de bien vouloir mettre le cadeau de côté.</strong></p>
             
             <p>Le client se présentera prochainement en magasin pour le récupérer, avec présentation du mail garant.</p>
-            
+
+            <p><strong>Pensez à noter systématiquement le code marketing “Roue de Noël” si vous avez généré une vente grâce au cadeau récupéré dans le cadre de l’opération commerciale “Roue de Noël”.Un bilan vous sera demandé en fin de mois afin d’analyser les résultats : sur les 45 passages, nous évaluerons le nombre de ventes déclenchées par l’opération.</strong></p>
+
             <div class="stock-info">
               <p><strong>📦 Stock disponible pour ce lot :</strong> ${stockRemaining} unité(s) restante(s)</p>
             </div>

@@ -570,7 +570,27 @@ export default function App() {
                   }),
                 });
               } catch (err) {
-                console.error('Erreur envoi email:', err);
+                console.error('Erreur envoi email boutique:', err);
+                // On ne bloque pas l'UX si l'email échoue
+              }
+            })();
+
+            // Envoyer un email au client (gagnant) via Dialog Insight
+            (async () => {
+              try {
+                await fetch('/api/notify-client', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    firstName,
+                    lastName,
+                    email,
+                    shopName: shopNames[shopId] || shopId,
+                    segmentTitle: selectedSegment.title,
+                  }),
+                });
+              } catch (err) {
+                console.error('Erreur envoi email client:', err);
                 // On ne bloque pas l'UX si l'email échoue
               }
             })();
