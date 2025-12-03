@@ -664,8 +664,10 @@ export default function App() {
       style={{
         padding: 0,
         position: 'relative',
-        minHeight: '100vh',
+        width: '480px',
+        height: '520px',
         background: 'transparent',
+        overflow: 'hidden',
       }}
     >
       {/* Étape 1 : saisie de l'email */}
@@ -674,10 +676,10 @@ export default function App() {
         <div
           style={{
             position: 'absolute',
-            top: 0,
+            top: '60px',
             left: 0,
             width: '480px',
-            height: '480px',
+            height: '460px',
             background: 'rgba(0,0,0,0.85)',
             display: 'flex',
             alignItems: 'center',
@@ -790,10 +792,10 @@ export default function App() {
         <div
           style={{
             position: 'absolute',
-            top: 0,
+            top: '60px',
             left: 0,
             width: '480px',
-            height: '480px',
+            height: '460px',
             background: 'rgba(0,0,0,0.85)',
             display: 'flex',
             alignItems: 'center',
@@ -906,14 +908,16 @@ export default function App() {
         title={`${clickCount}/4 clics pour ${showAdminInterface ? 'masquer' : 'activer'} le mode admin`}
       />
 
-      <div className="wheel-container" style={{ position: 'absolute', top: 0, left: 0 }}>
+      <div className="wheel-container" style={{ position: 'absolute', top: '60px', left: '0px', width: '480px', height: '460px' }}>
         {/* Bouton pour changer de boutique (visible pour tous) */}
         {emailValidated && !showShopSelection && shopId && (
           <button
             onClick={() => setShowShopSelection(true)}
             style={{
-              display: 'block',
-              marginBottom: '10px',
+              position: 'absolute',
+              top: '-50px',
+              left: '50%',
+              transform: 'translateX(-50%)',
               background: 'linear-gradient(135deg, #3b82f6, #2563eb)',
               color: '#fff',
               border: 'none',
@@ -924,13 +928,14 @@ export default function App() {
               fontSize: '0.9rem',
               boxShadow: '0 4px 15px rgba(0, 0, 0, 0.3)',
               transition: 'all 0.3s ease',
+              zIndex: 100,
             }}
             onMouseOver={(e) => {
-              e.currentTarget.style.transform = 'scale(1.05)';
+              e.currentTarget.style.transform = 'translateX(-50%) scale(1.05)';
               e.currentTarget.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.4)';
             }}
             onMouseOut={(e) => {
-              e.currentTarget.style.transform = 'scale(1)';
+              e.currentTarget.style.transform = 'translateX(-50%) scale(1)';
               e.currentTarget.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.3)';
             }}
           >
@@ -939,7 +944,9 @@ export default function App() {
         )}
         <div
           style={{
-            position: 'relative',
+            position: 'absolute',
+            top: '30px',
+            left: '40px',
             filter: !spinning || showShopSelection ? 'brightness(0.5)' : 'brightness(0.9)',
             transition: 'filter 0.3s ease',
             pointerEvents: showShopSelection ? 'none' : 'auto',
@@ -959,8 +966,8 @@ export default function App() {
             className="spin-button"
             style={{
               position: 'absolute',
-              top: '50%',
-              left: '50%',
+              top: '260px',
+              left: '240px',
               transform: 'translate(-50%, -50%)',
               fontSize: '1.1rem',
               padding: '15px 25px',
@@ -1009,8 +1016,8 @@ export default function App() {
           <div
             style={{
               position: 'absolute',
-              top: '50%',
-              left: '50%',
+              top: '260px',
+              left: '240px',
               transform: 'translate(-50%, -50%)',
               background: 'rgba(0, 0, 0, 0.8)',
               color: 'white',
@@ -1176,10 +1183,10 @@ export default function App() {
         <div
           style={{
             position: 'absolute',
-            top: 0,
+            top: '60px',
             left: 0,
             width: '480px',
-            height: '520px',
+            height: '460px',
             background: 'rgba(0,0,0,0.85)',
             display: 'flex',
             alignItems: 'center',
