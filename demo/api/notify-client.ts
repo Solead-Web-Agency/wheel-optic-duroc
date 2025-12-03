@@ -39,7 +39,7 @@ async function contactsGet(email: string): Promise<{ Success: boolean; Records?:
 }
 
 // Fonction pour créer/mettre à jour un contact
-async function contactsMerge(email: string, firstName: string, lastName: string): Promise<{ Success: boolean; Records?: Array<{ IdRecord: number }>; ErrorCode?: any; ErrorMessage?: any }> {
+async function contactsMerge(email: string, firstName: string, lastName: string, shopName: string, segmentTitle: string): Promise<{ Success: boolean; Records?: Array<{ IdRecord: number }>; ErrorCode?: any; ErrorMessage?: any }> {
   const response = await fetch(`${DIALOG_API_BASE}/contacts.ashx?method=Merge`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -58,6 +58,8 @@ async function contactsMerge(email: string, firstName: string, lastName: string)
             f_EMail: email,
             f_FirstName: firstName,
             f_LastName: lastName,
+            f_LotGagne: segmentTitle,
+            f_BoutiqueNom: shopName,
           },
         },
       ],
@@ -104,12 +106,7 @@ async function sendingsSendSingle2(
       },
       SendSingleOptions: {
         idMessageVersion: null,
-        MessageParameterValues: {
-          client_prenom: firstName,
-          client_nom: lastName,
-          lot_gagne: segmentTitle,
-          boutique_nom: shopName,
-        },
+        MessageParameterValues: {},
         DiscardParametersAfterSending: false,
       },
       Attachments: null,
@@ -155,9 +152,13 @@ export default async function handler(req: any, res: any) {
     if (contactsGetResp.Success && contactsGetResp.Records && contactsGetResp.Records.length > 0) {
       idContact = contactsGetResp.Records[0].idContact;
       console.log(`✅ Contact trouvé: idContact=${idContact}`);
+      
+      // Mettre à jour le contact avec les infos du lot et de la boutique
+      console.log('ℹ️  Mise à jour du contact avec LotGagne et BoutiqueNom...');
+      await contactsMerge(email, firstName, lastName, shopName, segmentTitle);
     } else {
       console.log('ℹ️  Contact non trouvé, création...');
-      const contactsMergeResp = await contactsMerge(email, firstName, lastName);
+      const contactsMergeResp = await contactsMerge(email, firstName, lastName, shopName, segmentTitle);
 
       if (!contactsMergeResp.Success) {
         console.error('❌ Erreur lors de la création du contact:', contactsMergeResp.ErrorCode, contactsMergeResp.ErrorMessage);
