@@ -183,8 +183,7 @@ INSERT INTO public.shops(id, name, email) VALUES
   ('shop-51', 'OPTIC DUROC Saint-Germain-en-Laye', 'saintgermainenlaye@opticduroc.com'),
   ('shop-52', 'OPTIC DUROC MOULINS LES METZ', 'augny@opticduroc.com'),
   ('shop-53', 'OPTIC DUROC PARIS 12', 'bercy@opticduroc.com'),
-  ('shop-54', 'OPTIC DUROC VERNON', 'vernon@durocaudition.com'),
-  ('shop-55', 'DUROC AUDITION MAGNY', 'magny@durocauditon.com');
+  ('shop-53', 'OPTIC DUROC PARIS 12', 'bercy@opticduroc.com');
 -- ============================================
 -- 3. STOCK INITIAL PAR BOUTIQUE ET PAR LOT
 -- ============================================
@@ -892,29 +891,3 @@ INSERT INTO public.shop_stock(shop_id, segment_id, remaining) VALUES
   ('shop-53', 9, 5),  -- CHAINETTES
   ('shop-53', 10, 2),  -- MASQUE
   ('shop-53', 11, 5);  -- ETUIS SOUPLE
--- Stock pour shop-54
-INSERT INTO public.shop_stock(shop_id, segment_id, remaining) VALUES
-  ('shop-54', 1, 5),  -- STYLO
-  ('shop-54', 2, 10),  -- TOTE BAG
-  ('shop-54', 3, 3),  -- TROUSSE VOYAGE
-  ('shop-54', 4, 3),  -- CHARGEUR
-  ('shop-54', 5, 5),  -- BAUME À LÈVRES
-  ('shop-54', 6, 3),  -- PORTE CARTE
-  ('shop-54', 7, 4),  -- SPRAY
-  ('shop-54', 8, 2),  -- HAUT PARLEUR
-  ('shop-54', 9, 5),  -- CHAINETTES
-  ('shop-54', 10, 2),  -- MASQUE
-  ('shop-54', 11, 5);  -- ETUIS SOUPLE
--- Stock pour shop-55
-INSERT INTO public.shop_stock(shop_id, segment_id, remaining) VALUES
-  ('shop-55', 1, 5),  -- STYLO
-  ('shop-55', 2, 10),  -- TOTE BAG
-  ('shop-55', 3, 3),  -- TROUSSE VOYAGE
-  ('shop-55', 4, 3),  -- CHARGEUR
-  ('shop-55', 5, 5),  -- BAUME À LÈVRES
-  ('shop-55', 6, 3),  -- PORTE CARTE
-  ('shop-55', 7, 4),  -- SPRAY
-  ('shop-55', 8, 2),  -- HAUT PARLEUR
-  ('shop-55', 9, 5),  -- CHAINETTES
-  ('shop-55', 10, 2),  -- MASQUE
-  ('shop-55', 11, 5);  -- ETUIS SOUPLE

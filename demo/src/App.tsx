@@ -15,6 +15,63 @@ type WinsMap = { [id: number]: number };
 
 type StockMap = { [id: number]: number };
 
+// Mapping des URLs de boutiques
+const shopUrls: { [key: string]: string } = {
+  'shop-1': 'https://opticduroc.com/monture-lunette/opticien-optic-duroc-paris-7-sevres/',
+  'shop-2': 'https://opticduroc.com/monture-lunette/opticien-optic-duroc-paris-11-voltaire/',
+  'shop-3': 'https://opticduroc.com/monture-lunette/opticien-optic-duroc-reims/',
+  'shop-4': 'https://opticduroc.com/monture-lunette/opticien-optic-duroc-strasbourg/',
+  'shop-5': 'https://opticduroc.com/monture-lunette/opticien-optic-duroc-metz/',
+  'shop-6': 'https://opticduroc.com/monture-lunette/opticien-optic-duroc-paris-7/',
+  'shop-7': 'https://opticduroc.com/monture-lunette/optic-duroc-aix-en-provence/',
+  'shop-8': 'https://opticduroc.com/monture-lunette/opticien-optic-duroc-toulouse/',
+  'shop-9': 'https://opticduroc.com/monture-lunette/opticien-optic-duroc-paris-11-oberkampf/',
+  'shop-10': 'https://opticduroc.com/monture-lunette/opticien-optic-duroc-montrouge/',
+  'shop-11': 'https://opticduroc.com/monture-lunette/opticien-optic-duroc-paris-8/',
+  'shop-12': 'https://opticduroc.com/monture-lunette/opticien-optic-duroc-saint-maur/',
+  'shop-13': 'https://opticduroc.com/monture-lunette/opticien-optic-duroc-neuilly/',
+  'shop-14': 'https://opticduroc.com/monture-lunette/opticien-optic-duroc-paris-14/',
+  'shop-15': 'https://opticduroc.com/monture-lunette/opticien-caen-theatre-optic-duroc/',
+  'shop-16': 'https://durocaudition.com/appareils-auditifs/reservation/audioprothesiste-neuilly-duroc-audition',
+  'shop-17': 'https://opticduroc.com/monture-lunette/opticien-charenton-optic-duroc/',
+  'shop-18': 'https://durocaudition.com/appareils-auditifs/reservation/audioprothesiste-maisons-laffitte-duroc-audition',
+  'shop-19': 'https://opticduroc.com/monture-lunette/opticien-dijon-optic-duroc/',
+  'shop-20': 'https://opticduroc.com/monture-lunette/opticien-optic-duroc-mulhouse/',
+  'shop-21': 'https://opticduroc.com/monture-lunette/opticien-optic-duroc-versailles/',
+  'shop-22': 'https://opticduroc.com/monture-lunette/opticien-optic-duroc-les-lilas/',
+  'shop-23': 'https://opticduroc.com/monture-lunette/opticien-optic-duroc-dreux/',
+  'shop-24': 'https://opticduroc.com/monture-lunette/opticien-optic-duroc-evreux/',
+  'shop-25': 'https://opticduroc.com/monture-lunette/opticien-optic-duroc-montpellier/',
+  'shop-26': 'https://opticduroc.com/monture-lunette/opticien-optic-duroc-nimes/',
+  'shop-27': 'https://opticduroc.com/monture-lunette/opticien-optic-duroc-sens/',
+  'shop-28': 'https://opticduroc.com/monture-lunette/opticien-optic-duroc-paris-18/',
+  'shop-29': 'https://opticduroc.com/monture-lunette/opticien-optic-duroc-lyon-2/',
+  'shop-30': 'https://opticduroc.com/monture-lunette/opticien-optic-duroc-paris-10/',
+  'shop-31': 'https://opticduroc.com/monture-lunette/optic-duroc-colmar/',
+  'shop-32': 'https://opticduroc.com/monture-lunette/opticien-optic-duroc-paris-11-republique/',
+  'shop-33': 'https://opticduroc.com/monture-lunette/opticien-optic-duroc-chaville/',
+  'shop-34': 'https://opticduroc.com/monture-lunette/opticien-optic-duroc-levallois/',
+  'shop-35': 'https://opticduroc.com/monture-lunette/opticien-optic-duroc-clamart/',
+  'shop-36': 'https://opticduroc.com/monture-lunette/opticien-optic-duroc-asnieres/',
+  'shop-37': 'https://opticduroc.com/monture-lunette/opticien-optic-duroc-paris-16/',
+  'shop-38': 'https://opticduroc.com/monture-lunette/opticien-optic-duroc-paris-17-niel/',
+  'shop-39': 'https://opticduroc.com/monture-lunette/opticien-optic-duroc-dammarie/',
+  'shop-40': 'https://opticduroc.com/monture-lunette/opticien-optic-duroc-boulogne/',
+  'shop-41': 'https://opticduroc.com/monture-lunette/opticien-optic-duroc-saint-nazaire/',
+  'shop-42': 'https://opticduroc.com/monture-lunette/opticien-optic-duroc-paris-17-clichy/',
+  'shop-43': 'https://opticduroc.com/monture-lunette/opticien-optic-duroc-tremblay/',
+  'shop-44': 'https://opticduroc.com/monture-lunette/opticien-optic-duroc-paris-15/',
+  'shop-45': 'https://opticduroc.com/monture-lunette/opticien-optic-duroc-saint-cyr-lecole/',
+  'shop-46': 'https://opticduroc.com/monture-lunette/opticien-optic-duroc-paris-19/',
+  'shop-47': 'https://opticduroc.com/monture-lunette/opticien-optic-duroc-noyelles-godault/',
+  'shop-48': 'https://opticduroc.com/monture-lunette/opticien-optic-duroc-paris-02-vivienne/',
+  'shop-49': 'https://opticduroc.com/monture-lunette/opticien-leraincy-optic-duroc/',
+  'shop-50': 'https://opticduroc.com/monture-lunette/opticien-istres-optic-duroc/',
+  'shop-51': 'https://opticduroc.com/monture-lunette/opticien-saint-germain-en-laye-optic-duroc/',
+  'shop-52': 'https://opticduroc.com/monture-lunette/opticien-augny-optic-duroc/',
+  'shop-53': 'https://opticduroc.com/monture-lunette/opticien-optic-duroc-paris-12/',
+};
+
 // Mapping des noms de boutiques
 const shopNames: { [key: string]: string } = {
   'shop-1': 'OPTIC DUROC PARIS 7 SÈVRES',
@@ -70,8 +127,6 @@ const shopNames: { [key: string]: string } = {
   'shop-51': 'OPTIC DUROC Saint-Germain-en-Laye',
   'shop-52': 'OPTIC DUROC MOULINS LES METZ',
   'shop-53': 'OPTIC DUROC PARIS 12',
-  'shop-54': 'OPTIC DUROC VERNON',
-  'shop-55': 'DUROC AUDITION MAGNY',
 };
 
 // Config couleurs + segments (sans stocks ni images)
@@ -586,6 +641,7 @@ export default function App() {
                     lastName,
                     email,
                     shopName: shopNames[shopId] || shopId,
+                    shopUrl: shopUrls[shopId] || 'https://opticduroc.com',
                     segmentTitle: selectedSegment.title,
                   }),
                 });

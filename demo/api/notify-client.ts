@@ -39,7 +39,7 @@ async function contactsGet(email: string): Promise<{ Success: boolean; Records?:
 }
 
 // Fonction pour créer/mettre à jour un contact
-async function contactsMerge(email: string, firstName: string, lastName: string, shopName: string, segmentTitle: string): Promise<{ Success: boolean; Records?: Array<{ IdRecord: number }>; ErrorCode?: any; ErrorMessage?: any }> {
+async function contactsMerge(email: string, firstName: string, lastName: string, shopName: string, shopUrl: string, segmentTitle: string): Promise<{ Success: boolean; Records?: Array<{ IdRecord: number }>; ErrorCode?: any; ErrorMessage?: any }> {
   const response = await fetch(`${DIALOG_API_BASE}/contacts.ashx?method=Merge`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -60,6 +60,7 @@ async function contactsMerge(email: string, firstName: string, lastName: string,
             f_LastName: lastName,
             f_LotGagne: segmentTitle,
             f_BoutiqueNom: shopName,
+            f_BoutiqueLien: shopUrl,
           },
         },
       ],
@@ -130,10 +131,10 @@ export default async function handler(req: any, res: any) {
     const vercelIP = req.headers['x-forwarded-for'] || req.connection?.remoteAddress || 'unknown';
     console.log(`📍 IP Vercel utilisée: ${vercelIP}`);
 
-    const { firstName, lastName, email, shopName, segmentTitle } = req.body;
+    const { firstName, lastName, email, shopName, shopUrl, segmentTitle } = req.body;
 
-    if (!firstName || !lastName || !email || !shopName || !segmentTitle) {
-      return res.status(400).json({ error: 'Missing required fields: firstName, lastName, email, shopName, segmentTitle' });
+    if (!firstName || !lastName || !email || !shopName || !shopUrl || !segmentTitle) {
+      return res.status(400).json({ error: 'Missing required fields: firstName, lastName, email, shopName, shopUrl, segmentTitle' });
     }
 
     if (!DIALOG_IDKEY || !DIALOG_KEY) {
@@ -144,6 +145,7 @@ export default async function handler(req: any, res: any) {
     console.log(`   Gagnant: ${firstName} ${lastName}`);
     console.log(`   Lot: ${segmentTitle}`);
     console.log(`   Boutique: ${shopName}`);
+    console.log(`   URL: ${shopUrl}`);
 
     // 1. Chercher ou créer le contact
     let idContact: number | null = null;
@@ -154,11 +156,11 @@ export default async function handler(req: any, res: any) {
       console.log(`✅ Contact trouvé: idContact=${idContact}`);
       
       // Mettre à jour le contact avec les infos du lot et de la boutique
-      console.log('ℹ️  Mise à jour du contact avec LotGagne et BoutiqueNom...');
-      await contactsMerge(email, firstName, lastName, shopName, segmentTitle);
+      console.log('ℹ️  Mise à jour du contact avec LotGagne, BoutiqueNom et BoutiqueLien...');
+      await contactsMerge(email, firstName, lastName, shopName, shopUrl, segmentTitle);
     } else {
       console.log('ℹ️  Contact non trouvé, création...');
-      const contactsMergeResp = await contactsMerge(email, firstName, lastName, shopName, segmentTitle);
+      const contactsMergeResp = await contactsMerge(email, firstName, lastName, shopName, shopUrl, segmentTitle);
 
       if (!contactsMergeResp.Success) {
         console.error('❌ Erreur lors de la création du contact:', contactsMergeResp.ErrorCode, contactsMergeResp.ErrorMessage);
