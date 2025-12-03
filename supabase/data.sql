@@ -182,7 +182,6 @@ INSERT INTO public.shops(id, name, email) VALUES
   ('shop-50', 'OPTIC DUROC ISTRES', 'istres@opticduroc.com'),
   ('shop-51', 'OPTIC DUROC Saint-Germain-en-Laye', 'saintgermainenlaye@opticduroc.com'),
   ('shop-52', 'OPTIC DUROC MOULINS LES METZ', 'augny@opticduroc.com'),
-  ('shop-53', 'OPTIC DUROC PARIS 12', 'bercy@opticduroc.com'),
   ('shop-53', 'OPTIC DUROC PARIS 12', 'bercy@opticduroc.com');
 -- ============================================
 -- 3. STOCK INITIAL PAR BOUTIQUE ET PAR LOT

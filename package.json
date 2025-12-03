@@ -33,6 +33,7 @@
   "dependencies": {
     "@armin-eslami/wheel-of-fortune": "^1.0.3",
     "clsx": "^2.1.0",
+    "dotenv": "^17.2.3",
     "nodemailer": "^6.10.1",
     "tailwind-merge": "^2.2.0",
     "tslib": "^2.8.1"

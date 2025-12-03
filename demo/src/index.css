@@ -8,19 +8,28 @@
   box-sizing: border-box;
 }
 
+html {
+  background: transparent;
+}
+
 body {
   font-family: Arial, sans-serif;
-  background: #000000;
+  background: transparent;
   min-height: 100vh;
+}
+
+#root {
+  background: transparent;
 }
 
 .app-container {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 0;
+  background: transparent;
 }
 
 .title {
@@ -40,12 +49,12 @@ body {
 }
 
 .wheel-container {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border-radius: 2rem;
-  padding: 2rem;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  margin-bottom: 2rem;
+  background: transparent;
+  backdrop-filter: none;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
+  margin-bottom: 0;
 }
 
 .wheel-component {

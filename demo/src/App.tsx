@@ -130,60 +130,60 @@ const shopNames: { [key: string]: string } = {
 };
 
 // Config couleurs + segments (sans stocks ni images)
-// Palette de couleurs pour 11 segments
+// Palette de couleurs pour 11 segments - Style Noël doré et blanc
 const segmentColors = [
-  '#ff503b', // Rouge
-  '#ffac44', // Orange
-  '#42adce', // Bleu
-  '#9b59b6', // Violet
-  '#2ecc71', // Vert
-  '#f39c12', // Jaune-orange
-  '#e74c3c', // Rouge foncé
-  '#3498db', // Bleu clair
-  '#1abc9c', // Turquoise
-  '#e67e22', // Orange foncé
-  '#16a085', // Vert émeraude
+  '#FFFFFF', // Blanc
+  '#D4AF37', // Or/Gold
+  '#FFFFFF', // Blanc
+  '#C9A961', // Or clair
+  '#FFFFFF', // Blanc
+  '#B8932F', // Or foncé
+  '#FFFFFF', // Blanc
+  '#D4AF37', // Or/Gold
+  '#FFFFFF', // Blanc
+  '#C9A961', // Or clair
+  '#FFFFFF', // Blanc
 ];
 
 const festivalConfigs = {
   francofolies: {
     colors: {
-      primary: '#ff503b',
-      secondary: '#ffac44',
-      accent: '#42adce',
+      primary: '#D4AF37',
+      secondary: '#C9A961',
+      accent: '#D4AF37',
     },
     segments: [
-      { id: 1, title: 'STYLO', color: segmentColors[0], textColor: '#FFFFFF' },
+      { id: 1, title: 'STYLO', color: segmentColors[0], textColor: '#2C2416' },
       { id: 2, title: 'TOTE BAG', color: segmentColors[1], textColor: '#FFFFFF' },
-      { id: 3, title: 'TROUSSE VOYAGE', color: segmentColors[2], textColor: '#FFFFFF' },
+      { id: 3, title: 'TROUSSE VOYAGE', color: segmentColors[2], textColor: '#2C2416' },
       { id: 4, title: 'CHARGEUR', color: segmentColors[3], textColor: '#FFFFFF' },
-      { id: 5, title: 'BAUME À LÈVRES', color: segmentColors[4], textColor: '#FFFFFF' },
+      { id: 5, title: 'BAUME À LÈVRES', color: segmentColors[4], textColor: '#2C2416' },
       { id: 6, title: 'PORTE CARTE', color: segmentColors[5], textColor: '#FFFFFF' },
-      { id: 7, title: 'SPRAY', color: segmentColors[6], textColor: '#FFFFFF' },
+      { id: 7, title: 'SPRAY', color: segmentColors[6], textColor: '#2C2416' },
       { id: 8, title: 'HAUT PARLEUR', color: segmentColors[7], textColor: '#FFFFFF' },
-      { id: 9, title: 'CHAINETTES', color: segmentColors[8], textColor: '#FFFFFF' },
+      { id: 9, title: 'CHAINETTES', color: segmentColors[8], textColor: '#2C2416' },
       { id: 10, title: 'MASQUE', color: segmentColors[9], textColor: '#FFFFFF' },
-      { id: 11, title: 'ETUIS SOUPLE', color: segmentColors[10], textColor: '#FFFFFF' },
+      { id: 11, title: 'ETUIS SOUPLE', color: segmentColors[10], textColor: '#2C2416' },
     ],
   },
   goldencoast: {
     colors: {
-      primary: '#ff503b',
-      secondary: '#ffac44',
-      accent: '#42adce',
+      primary: '#D4AF37',
+      secondary: '#C9A961',
+      accent: '#D4AF37',
     },
     segments: [
-      { id: 1, title: 'STYLO', color: segmentColors[0], textColor: '#FFFFFF' },
+      { id: 1, title: 'STYLO', color: segmentColors[0], textColor: '#2C2416' },
       { id: 2, title: 'TOTE BAG', color: segmentColors[1], textColor: '#FFFFFF' },
-      { id: 3, title: 'TROUSSE VOYAGE', color: segmentColors[2], textColor: '#FFFFFF' },
+      { id: 3, title: 'TROUSSE VOYAGE', color: segmentColors[2], textColor: '#2C2416' },
       { id: 4, title: 'CHARGEUR', color: segmentColors[3], textColor: '#FFFFFF' },
-      { id: 5, title: 'BAUME À LÈVRES', color: segmentColors[4], textColor: '#FFFFFF' },
+      { id: 5, title: 'BAUME À LÈVRES', color: segmentColors[4], textColor: '#2C2416' },
       { id: 6, title: 'PORTE CARTE', color: segmentColors[5], textColor: '#FFFFFF' },
-      { id: 7, title: 'SPRAY', color: segmentColors[6], textColor: '#FFFFFF' },
+      { id: 7, title: 'SPRAY', color: segmentColors[6], textColor: '#2C2416' },
       { id: 8, title: 'HAUT PARLEUR', color: segmentColors[7], textColor: '#FFFFFF' },
-      { id: 9, title: 'CHAINETTES', color: segmentColors[8], textColor: '#FFFFFF' },
+      { id: 9, title: 'CHAINETTES', color: segmentColors[8], textColor: '#2C2416' },
       { id: 10, title: 'MASQUE', color: segmentColors[9], textColor: '#FFFFFF' },
-      { id: 11, title: 'ETUIS SOUPLE', color: segmentColors[10], textColor: '#FFFFFF' },
+      { id: 11, title: 'ETUIS SOUPLE', color: segmentColors[10], textColor: '#2C2416' },
     ],
   },
 };
@@ -237,8 +237,8 @@ function SegmentedWheel({ segments, rotationAngle, festival }: {
       ctx.fillStyle = segment.color;
       ctx.fill();
 
-      ctx.strokeStyle = '#000';
-      ctx.lineWidth = 1;
+      ctx.strokeStyle = '#B8932F';
+      ctx.lineWidth = 2;
       ctx.stroke();
 
       // Texte en long dans le quartier (un seul bloc)
@@ -273,8 +273,8 @@ function SegmentedWheel({ segments, rotationAngle, festival }: {
     ctx.arc(centerX, centerY, 30, 0, 2 * Math.PI);
     ctx.fillStyle = config.colors.accent;
     ctx.fill();
-    ctx.strokeStyle = '#000';
-    ctx.lineWidth = 1;
+    ctx.strokeStyle = '#B8932F';
+    ctx.lineWidth = 3;
     ctx.stroke();
   }, [segments, rotationAngle, festival]);
 
@@ -662,10 +662,10 @@ export default function App() {
     <div
       className="app-container"
       style={{
-        padding: '1rem',
+        padding: 0,
         position: 'relative',
         minHeight: '100vh',
-        background: '#FFFFFF',
+        background: 'transparent',
       }}
     >
       {/* Étape 1 : saisie de l'email */}
