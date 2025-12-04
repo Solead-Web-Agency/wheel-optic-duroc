@@ -51,6 +51,11 @@ export default async function handler(req: any, res: any) {
     const shopEmail = shop.email; // Toujours envoyer à la boutique
     const shopName = shop.name;
 
+    console.log(`📧 Envoi email boutique:`);
+    console.log(`   Boutique: ${shopName} (${shopId})`);
+    console.log(`   Email boutique: ${shopEmail}`);
+    console.log(`   TEST_EMAIL (CCI): ${TEST_EMAIL || 'non défini'}`);
+
     // 2. Récupérer les infos du participant (prénom, nom)
     const participantUrl = new URL(`${SUPABASE_URL}/rest/v1/participants`);
     participantUrl.searchParams.set('email', `eq.${userEmail}`);
@@ -235,11 +240,21 @@ L'équipe Optic Duroc
     // Ajouter TEST_EMAIL en CCI si défini
     if (TEST_EMAIL) {
       mailOptions.bcc = TEST_EMAIL;
+      console.log(`   ✅ CCI ajouté: ${TEST_EMAIL}`);
+    } else {
+      console.log(`   ⚠️  TEST_EMAIL non défini, pas de CCI`);
     }
+
+    console.log(`   Configuration SMTP: ${SMTP_HOST}:${SMTP_PORT}`);
+    console.log(`   From: ${FROM_EMAIL}`);
 
     const info = await transporter.sendMail(mailOptions);
 
-    console.log('Email sent:', info.messageId);
+    console.log('✅ Email envoyé avec succès:', info.messageId);
+    console.log(`   Destinataire: ${shopEmail}`);
+    if (TEST_EMAIL) {
+      console.log(`   CCI: ${TEST_EMAIL}`);
+    }
 
     return res.status(200).json({
       success: true,
