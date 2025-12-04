@@ -359,6 +359,7 @@ export default function App() {
   const [emailError, setEmailError] = useState<string | null>(null);
   const [isCheckingEmail, setIsCheckingEmail] = useState(false);
   const [emailValidated, setEmailValidated] = useState(false);
+  const [spinError, setSpinError] = useState<string | null>(null);
 
   // Boutique courante - sélection obligatoire pour tous les joueurs
   const [shopId, setShopId] = useState<string>(() => {
@@ -542,8 +543,53 @@ export default function App() {
     return baseSegments.filter((s) => (stockById[s.id] ?? 0) > 0);
   }, [baseSegments, stockById]);
 
-  const spinWheel = () => {
+  const spinWheel = async () => {
     if (spinning || !shopId || showShopSelection || !emailValidated) return;
+    
+    // Vérifier si le participant a déjà gagné il y a moins d'1 heure (par nom/prénom)
+    setSpinError(null);
+    const SUPA_URL = (import.meta as any).env.VITE_SUPABASE_URL || (import.meta as any).env.NEXT_PUBLIC_SUPABASE_URL;
+    const SUPA_ANON = (import.meta as any).env.VITE_SUPABASE_ANON_KEY || (import.meta as any).env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    
+    if (!SUPA_URL || !SUPA_ANON) {
+      setSpinError('Configuration Supabase manquante.');
+      return;
+    }
+
+    try {
+      // Vérifier les gains récents par nom/prénom
+      const checkUrl = `${SUPA_URL}/rest/v1/rpc/check_recent_win`;
+      const checkResp = await fetch(checkUrl, {
+        method: 'POST',
+        headers: {
+          apikey: SUPA_ANON,
+          Authorization: `Bearer ${SUPA_ANON}`,
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({
+          p_email: email.trim(),
+          p_first_name: firstName.trim(),
+          p_last_name: lastName.trim(),
+        }),
+      });
+
+      if (!checkResp.ok) {
+        const errorText = await checkResp.text();
+        console.error('Erreur vérification gain récent:', checkResp.status, errorText);
+        // En cas d'erreur API, on continue quand même (ne pas bloquer pour un problème technique)
+      } else {
+        const hasRecentWin = await checkResp.json();
+        if (hasRecentWin === true) {
+          setSpinError('Vous avez déjà gagné il y a moins d\'une heure. Merci de patienter avant de réessayer.');
+          return;
+        }
+      }
+    } catch (err) {
+      console.error('Erreur lors de la vérification des gains récents:', err);
+      // En cas d'erreur réseau, on continue quand même (ne pas bloquer pour un problème technique)
+    }
+
     setSpinning(true);
 
     const segments = availableSegments;
@@ -609,7 +655,11 @@ export default function App() {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
               },
-              body: JSON.stringify({ p_shop: shopId, p_segment: selectedId }),
+              body: JSON.stringify({ 
+                p_shop: shopId, 
+                p_segment: selectedId,
+                p_participant_email: email.trim(),
+              }),
             });
             if (resp.status === 409) {
               setStockById((prev) => ({ ...prev, [selectedId]: 0 }));
@@ -1032,10 +1082,48 @@ export default function App() {
             />
           </div>
           
+          {spinError && (
+            <div
+              style={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                background: 'rgba(239, 68, 68, 0.95)',
+                color: 'white',
+                padding: '16px 24px',
+                borderRadius: '12px',
+                fontSize: '0.95rem',
+                fontWeight: 'bold',
+                zIndex: 20,
+                textAlign: 'center',
+                boxShadow: '0 8px 25px rgba(0, 0, 0, 0.5)',
+                maxWidth: '320px',
+                border: '2px solid #dc2626',
+              }}
+            >
+              {spinError}
+              <button
+                onClick={() => setSpinError(null)}
+                style={{
+                  marginTop: '12px',
+                  background: 'rgba(255, 255, 255, 0.2)',
+                  color: 'white',
+                  border: '1px solid rgba(255, 255, 255, 0.3)',
+                  padding: '6px 16px',
+                  borderRadius: '6px',
+                  cursor: 'pointer',
+                  fontSize: '0.9rem',
+                }}
+              >
+                OK
+              </button>
+            </div>
+          )}
           {!spinning && (
             <button 
             onClick={spinWheel}
-            disabled={!shopId || showShopSelection || !emailValidated}
+            disabled={!shopId || showShopSelection || !emailValidated || !!spinError}
               className="spin-button"
               style={{ 
                 position: 'absolute',
@@ -1440,6 +1528,36 @@ export default function App() {
                 </div>
                 <div style={{ fontSize: '0.95rem', color: '#FFD700', fontWeight: '600', flex: 1 }}>
                   Venez récupérer votre cadeau en magasin !
+                </div>
+              </div>
+              
+              <div style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: '12px',
+                padding: '12px',
+                background: 'rgba(255, 215, 0, 0.05)',
+                borderRadius: '10px',
+                border: '1px solid rgba(255, 215, 0, 0.2)',
+              }}>
+                <div style={{
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '50%',
+                  background: 'linear-gradient(135deg, #FFD700, #FFA500)',
+                  color: '#1a1a1a',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontWeight: 'bold',
+                  fontSize: '1rem',
+                  flexShrink: 0,
+                  boxShadow: '0 4px 15px rgba(255, 215, 0, 0.4)',
+                }}>
+                  5
+                </div>
+                <div style={{ fontSize: '0.95rem', color: '#FFD700', fontWeight: '600', flex: 1 }}>
+                  Limité à un seul cadeau par personne même si l'adresse mail est différente
                 </div>
               </div>
             </div>
