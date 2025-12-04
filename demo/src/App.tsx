@@ -897,7 +897,7 @@ export default function App() {
         onClick={() => setShowHowItWorks(true)}
         style={{
           position: 'absolute',
-          top: '470px',
+          top: emailValidated && !showShopSelection && shopId ? '470px' : '410px',
           left: '200px',
           transform: 'translateX(-50%)',
           width: '40px',
