@@ -180,7 +180,7 @@ export default async function handler(req: any, res: any) {
             
             <p>Le client se présentera prochainement en magasin pour le récupérer, avec présentation du mail garant.</p>
 
-            <p><strong>Pensez à noter systématiquement le code marketing “Roue de Noël” si vous avez généré une vente grâce au cadeau récupéré dans le cadre de l’opération commerciale “Roue de Noël”.Un bilan vous sera demandé en fin de mois afin d’analyser les résultats : sur les 45 passages, nous évaluerons le nombre de ventes déclenchées par l’opération.</strong></p>
+            <p>Un <strong>code marketing “Roue de Noël”</strong> a été créé spécialement : pensez à l’intégrer systématiquement dès qu’une vente est générée grâce au cadeau récupéré dans le cadre de l’opération. Un <strong>bilan</strong> sera réalisé en fin de mois afin d’analyser le nombre de ventes déclenchées par l’action, pour chaque boutique.</p>
             
             <div class="stock-info">
               <p><strong>📦 Stock disponible dans votre boutique (par lot) :</strong></p>

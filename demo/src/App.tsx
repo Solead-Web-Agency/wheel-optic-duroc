@@ -229,7 +229,7 @@ function SegmentedWheel({ segments, rotationAngle, festival }: {
       const startAngle = -Math.PI / 2 + index * segmentAngle;
       const endAngle = startAngle + segmentAngle;
 
-      // Quartier
+      // Quartier - utiliser directement les couleurs définies dans la config
       ctx.beginPath();
       ctx.moveTo(centerX, centerY);
       ctx.arc(centerX, centerY, radius, startAngle, endAngle);
@@ -678,9 +678,9 @@ export default function App() {
             position: 'absolute',
             top: 0,
             left: 0,
-            width: '480px',
-            height: '480px',
-            background: 'rgba(0,0,0,0.85)',
+            width: '400px',
+            height: '400px',
+            background: 'transparent',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -794,9 +794,9 @@ export default function App() {
             position: 'absolute',
             top: 0,
             left: 0,
-            width: '480px',
-            height: '480px',
-            background: 'rgba(0,0,0,0.85)',
+            width: '400px',
+            height: '400px',
+            background: 'transparent',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -839,7 +839,7 @@ export default function App() {
                 fontWeight: 'bold',
               }}
             >
-              {Array.from({ length: 55 }, (_, i) => {
+              {Array.from({ length: 53 }, (_, i) => {
                 const id = `shop-${i + 1}`;
                 return (
                   <option key={id} value={id}>
@@ -914,29 +914,50 @@ export default function App() {
           <button
             onClick={() => setShowShopSelection(true)}
             style={{
-              display: 'block',
-              marginBottom: '10px',
-              background: 'linear-gradient(135deg, #3b82f6, #2563eb)',
-              color: '#fff',
-              border: 'none',
-              padding: '10px 16px',
-              borderRadius: '25px',
+              position: 'absolute',
+              top: '420px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              background: 'linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%)',
+              color: '#FFD700',
+              border: '2px solid #FFD700',
+              padding: '10px 20px 10px 16px',
+              borderRadius: '30px',
               cursor: 'pointer',
               fontWeight: 'bold',
-              fontSize: '0.9rem',
-              boxShadow: '0 4px 15px rgba(0, 0, 0, 0.3)',
+              fontSize: '0.8rem',
+              boxShadow: '0 4px 15px rgba(0, 0, 0, 0.4), 0 0 15px rgba(255, 215, 0, 0.3)',
               transition: 'all 0.3s ease',
+              textShadow: '0 0 8px rgba(255, 215, 0, 0.5)',
+              letterSpacing: '0.5px',
+              zIndex: 100,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              maxWidth: '90%',
+              whiteSpace: 'nowrap',
             }}
             onMouseOver={(e) => {
-              e.currentTarget.style.transform = 'scale(1.05)';
-              e.currentTarget.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.4)';
+              e.currentTarget.style.transform = 'translateX(-50%) scale(1.05)';
+              e.currentTarget.style.boxShadow = '0 6px 25px rgba(0, 0, 0, 0.5), 0 0 25px rgba(255, 215, 0, 0.6)';
+              e.currentTarget.style.background = 'linear-gradient(135deg, #2d2d2d 0%, #3a3a3a 50%, #2d2d2d 100%)';
+              e.currentTarget.style.color = '#FFED4E';
             }}
             onMouseOut={(e) => {
-              e.currentTarget.style.transform = 'scale(1)';
-              e.currentTarget.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.3)';
+              e.currentTarget.style.transform = 'translateX(-50%) scale(1)';
+              e.currentTarget.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.4), 0 0 15px rgba(255, 215, 0, 0.3)';
+              e.currentTarget.style.background = 'linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%)';
+              e.currentTarget.style.color = '#FFD700';
             }}
           >
-            {shopNames[shopId] || shopId.replace('shop-', 'Boutique ')}
+            <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '250px' }}>
+              {shopNames[shopId] || shopId.replace('shop-', 'Boutique ')}
+            </span>
+            <span style={{ 
+              fontSize: '1rem', 
+              display: 'inline-block',
+              transition: 'transform 0.3s ease',
+            }}>▼</span>
           </button>
         )}
         <div
@@ -1062,7 +1083,7 @@ export default function App() {
                 borderRadius: '6px',
               }}
             >
-              {Array.from({ length: 55 }, (_, i) => `shop-${i + 1}`).map((id) => (
+              {Array.from({ length: 53 }, (_, i) => `shop-${i + 1}`).map((id) => (
                 <option key={id} value={id}>
                   {id}
                 </option>
@@ -1180,9 +1201,9 @@ export default function App() {
             position: 'absolute',
             top: 0,
             left: 0,
-            width: '480px',
-            height: '520px',
-            background: 'rgba(0,0,0,0.85)',
+            width: '400px',
+            height: '400px',
+            background: 'transparent',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -1196,7 +1217,7 @@ export default function App() {
               borderRadius: '16px',
               color: '#fff',
               textAlign: 'center',
-              width: '380px',
+              width: '340px',
               maxWidth: '90%',
               boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
             }}
