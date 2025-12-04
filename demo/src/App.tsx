@@ -1240,8 +1240,8 @@ export default function App() {
             position: 'absolute',
             top: 0,
             left: 0,
-            width: '480px',
-            height: '520px',
+            width: '400px',
+            height: '400px',
             background: 'rgba(0,0,0,0.9)',
             display: 'flex',
             alignItems: 'center',
@@ -1253,21 +1253,22 @@ export default function App() {
           <div
             style={{
               background: 'linear-gradient(135deg, #1a1a1a, #2d2d2d)',
-              padding: '28px',
+              padding: '20px',
               borderRadius: '20px',
               color: '#fff',
               textAlign: 'left',
-              width: '400px',
-              maxWidth: '90%',
+              width: '360px',
+              height: '360px',
               boxShadow: '0 25px 70px rgba(0,0,0,0.7), 0 0 40px rgba(255, 215, 0, 0.2)',
               border: '2px solid #FFD700',
-              maxHeight: '90%',
               overflowY: 'auto',
+              display: 'flex',
+              flexDirection: 'column',
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '28px', paddingBottom: '20px', borderBottom: '2px solid rgba(255, 215, 0, 0.3)' }}>
-              <h2 style={{ fontSize: '2rem', color: '#FFD700', margin: 0, fontWeight: 'bold', textShadow: '0 0 10px rgba(255, 215, 0, 0.5)' }}>Comment ça marche ?</h2>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', paddingBottom: '16px', borderBottom: '2px solid rgba(255, 215, 0, 0.3)', flexShrink: 0 }}>
+              <h2 style={{ fontSize: '1.6rem', color: '#FFD700', margin: 0, fontWeight: 'bold', textShadow: '0 0 10px rgba(255, 215, 0, 0.5)' }}>Comment ça marche ?</h2>
               <button
                 onClick={() => setShowHowItWorks(false)}
                 style={{
@@ -1302,20 +1303,20 @@ export default function App() {
               </button>
             </div>
             
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '24px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '16px' }}>
               <div style={{ 
                 display: 'flex', 
                 alignItems: 'center', 
-                gap: '16px',
-                padding: '16px',
+                gap: '12px',
+                padding: '12px',
                 background: 'rgba(255, 215, 0, 0.05)',
-                borderRadius: '12px',
+                borderRadius: '10px',
                 border: '1px solid rgba(255, 215, 0, 0.2)',
                 transition: 'all 0.3s ease',
               }}>
                 <div style={{
-                  width: '40px',
-                  height: '40px',
+                  width: '32px',
+                  height: '32px',
                   borderRadius: '50%',
                   background: 'linear-gradient(135deg, #FFD700, #FFA500)',
                   color: '#1a1a1a',
@@ -1323,13 +1324,13 @@ export default function App() {
                   alignItems: 'center',
                   justifyContent: 'center',
                   fontWeight: 'bold',
-                  fontSize: '1.2rem',
+                  fontSize: '1rem',
                   flexShrink: 0,
                   boxShadow: '0 4px 15px rgba(255, 215, 0, 0.4)',
                 }}>
                   1
                 </div>
-                <div style={{ fontSize: '1.1rem', color: '#FFD700', fontWeight: '600', flex: 1 }}>
+                <div style={{ fontSize: '0.95rem', color: '#FFD700', fontWeight: '600', flex: 1 }}>
                   Entrez votre e-mail
                 </div>
               </div>
@@ -1337,15 +1338,15 @@ export default function App() {
               <div style={{ 
                 display: 'flex', 
                 alignItems: 'center', 
-                gap: '16px',
-                padding: '16px',
+                gap: '12px',
+                padding: '12px',
                 background: 'rgba(255, 215, 0, 0.05)',
-                borderRadius: '12px',
+                borderRadius: '10px',
                 border: '1px solid rgba(255, 215, 0, 0.2)',
               }}>
                 <div style={{
-                  width: '40px',
-                  height: '40px',
+                  width: '32px',
+                  height: '32px',
                   borderRadius: '50%',
                   background: 'linear-gradient(135deg, #FFD700, #FFA500)',
                   color: '#1a1a1a',
@@ -1353,13 +1354,13 @@ export default function App() {
                   alignItems: 'center',
                   justifyContent: 'center',
                   fontWeight: 'bold',
-                  fontSize: '1.2rem',
+                  fontSize: '1rem',
                   flexShrink: 0,
                   boxShadow: '0 4px 15px rgba(255, 215, 0, 0.4)',
                 }}>
                   2
                 </div>
-                <div style={{ fontSize: '1.1rem', color: '#FFD700', fontWeight: '600', flex: 1 }}>
+                <div style={{ fontSize: '0.95rem', color: '#FFD700', fontWeight: '600', flex: 1 }}>
                   Choisissez la boutique la plus proche de chez vous
                 </div>
               </div>
@@ -1367,15 +1368,15 @@ export default function App() {
               <div style={{ 
                 display: 'flex', 
                 alignItems: 'center', 
-                gap: '16px',
-                padding: '16px',
+                gap: '12px',
+                padding: '12px',
                 background: 'rgba(255, 215, 0, 0.05)',
-                borderRadius: '12px',
+                borderRadius: '10px',
                 border: '1px solid rgba(255, 215, 0, 0.2)',
               }}>
                 <div style={{
-                  width: '40px',
-                  height: '40px',
+                  width: '32px',
+                  height: '32px',
                   borderRadius: '50%',
                   background: 'linear-gradient(135deg, #FFD700, #FFA500)',
                   color: '#1a1a1a',
@@ -1383,13 +1384,13 @@ export default function App() {
                   alignItems: 'center',
                   justifyContent: 'center',
                   fontWeight: 'bold',
-                  fontSize: '1.2rem',
+                  fontSize: '1rem',
                   flexShrink: 0,
                   boxShadow: '0 4px 15px rgba(255, 215, 0, 0.4)',
                 }}>
                   3
                 </div>
-                <div style={{ fontSize: '1.1rem', color: '#FFD700', fontWeight: '600', flex: 1 }}>
+                <div style={{ fontSize: '0.95rem', color: '#FFD700', fontWeight: '600', flex: 1 }}>
                   Tournez la roue
                 </div>
               </div>
@@ -1397,15 +1398,15 @@ export default function App() {
               <div style={{ 
                 display: 'flex', 
                 alignItems: 'center', 
-                gap: '16px',
-                padding: '16px',
+                gap: '12px',
+                padding: '12px',
                 background: 'rgba(255, 215, 0, 0.05)',
-                borderRadius: '12px',
+                borderRadius: '10px',
                 border: '1px solid rgba(255, 215, 0, 0.2)',
               }}>
                 <div style={{
-                  width: '40px',
-                  height: '40px',
+                  width: '32px',
+                  height: '32px',
                   borderRadius: '50%',
                   background: 'linear-gradient(135deg, #FFD700, #FFA500)',
                   color: '#1a1a1a',
@@ -1413,41 +1414,43 @@ export default function App() {
                   alignItems: 'center',
                   justifyContent: 'center',
                   fontWeight: 'bold',
-                  fontSize: '1.2rem',
+                  fontSize: '1rem',
                   flexShrink: 0,
                   boxShadow: '0 4px 15px rgba(255, 215, 0, 0.4)',
                 }}>
                   4
                 </div>
-                <div style={{ fontSize: '1.1rem', color: '#FFD700', fontWeight: '600', flex: 1 }}>
+                <div style={{ fontSize: '0.95rem', color: '#FFD700', fontWeight: '600', flex: 1 }}>
                   Venez récupérer votre cadeau en magasin !
                 </div>
               </div>
             </div>
               
             <div style={{ 
-              marginBottom: '24px', 
-              padding: '20px', 
+              marginBottom: '12px', 
+              padding: '14px', 
               background: 'linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 165, 0, 0.1))',
-              borderRadius: '12px', 
+              borderRadius: '10px', 
               border: '2px solid rgba(255, 215, 0, 0.4)',
               textAlign: 'center',
+              flexShrink: 0,
             }}>
-              <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#FFD700', textShadow: '0 0 10px rgba(255, 215, 0, 0.5)' }}>
+              <div style={{ fontSize: '1rem', fontWeight: 'bold', color: '#FFD700', textShadow: '0 0 10px rgba(255, 215, 0, 0.5)' }}>
                 Un cadeau pour célébrer les fêtes de fin d'année !
               </div>
             </div>
               
             <div style={{ 
-              fontSize: '0.8rem', 
+              fontSize: '0.7rem', 
               color: '#9ca3af', 
-              lineHeight: '1.7', 
-              padding: '16px', 
+              lineHeight: '1.6', 
+              padding: '12px', 
               background: 'rgba(0, 0, 0, 0.3)',
-              borderRadius: '10px',
+              borderRadius: '8px',
               border: '1px solid rgba(255, 215, 0, 0.15)',
+              flexShrink: 0,
             }}>
-              <div style={{ marginBottom: '8px', color: '#d1d5db', fontWeight: '500' }}>
+              <div style={{ marginBottom: '6px', color: '#d1d5db', fontWeight: '500' }}>
                 En tournant la roue, je confirme accepter le règlement du jeu et accepte de m'inscrire à la newsletter Optic Duroc.
               </div>
               <div style={{ color: '#9ca3af', fontStyle: 'italic' }}>
