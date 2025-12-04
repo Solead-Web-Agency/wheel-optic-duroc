@@ -897,8 +897,9 @@ export default function App() {
         onClick={() => setShowHowItWorks(true)}
         style={{
           position: 'absolute',
-          top: '10px',
-          right: '10px',
+          top: '470px',
+          left: '200px',
+          transform: 'translateX(-50%)',
           width: '40px',
           height: '40px',
           borderRadius: '50%',
@@ -916,12 +917,12 @@ export default function App() {
           zIndex: 1000,
         }}
         onMouseOver={(e) => {
-          e.currentTarget.style.transform = 'scale(1.1)';
+          e.currentTarget.style.transform = 'translateX(-50%) scale(1.1)';
           e.currentTarget.style.boxShadow = '0 6px 25px rgba(0, 0, 0, 0.5), 0 0 25px rgba(255, 215, 0, 0.6)';
           e.currentTarget.style.background = 'linear-gradient(135deg, #2d2d2d 0%, #3a3a3a 50%, #2d2d2d 100%)';
         }}
         onMouseOut={(e) => {
-          e.currentTarget.style.transform = 'scale(1)';
+          e.currentTarget.style.transform = 'translateX(-50%) scale(1)';
           e.currentTarget.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.4), 0 0 15px rgba(255, 215, 0, 0.3)';
           e.currentTarget.style.background = 'linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%)';
         }}
