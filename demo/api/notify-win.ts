@@ -11,6 +11,7 @@ const SMTP_PASS = process.env.SMTP_PASS || '';
 const FROM_EMAIL = process.env.FROM_EMAIL || 'noreply@opticduroc.com';
 const FROM_NAME = process.env.FROM_NAME || 'Roue de la Fortune - Optic Duroc';
 const TEST_EMAIL = process.env.TEST_EMAIL || ''; // Si défini, envoi en CCI (copie cachée)
+const DEBUG_EMAIL = (process.env.DEBUG_EMAIL || '').toLowerCase() === 'true';
 
 // On tape req/res en any pour éviter d'ajouter la dépendance @vercel/node
 export default async function handler(req: any, res: any) {
@@ -55,6 +56,7 @@ export default async function handler(req: any, res: any) {
     console.log(`   Boutique: ${shopName} (${shopId})`);
     console.log(`   Email boutique: ${shopEmail}`);
     console.log(`   TEST_EMAIL (CCI): ${TEST_EMAIL || 'non défini'}`);
+    console.log(`   DEBUG_EMAIL: ${DEBUG_EMAIL ? 'true' : 'false'}`);
 
     // 2. Récupérer les infos du participant (prénom, nom)
     const participantUrl = new URL(`${SUPABASE_URL}/rest/v1/participants`);
@@ -248,6 +250,7 @@ L'équipe Optic Duroc
     console.log(`   Configuration SMTP: ${SMTP_HOST}:${SMTP_PORT}`);
     console.log(`   From: ${FROM_EMAIL}`);
 
+    // Envoi principal à la boutique
     const info = await transporter.sendMail(mailOptions);
 
     console.log('✅ Email envoyé avec succès:', info.messageId);
@@ -256,10 +259,27 @@ L'équipe Optic Duroc
       console.log(`   CCI: ${TEST_EMAIL}`);
     }
 
+    // Mode debug : envoi d'une copie explicite vers TEST_EMAIL
+    let debugMessageId: string | undefined;
+    if (DEBUG_EMAIL && TEST_EMAIL) {
+      const debugOptions: any = {
+        from: `"${FROM_NAME}" <${FROM_EMAIL}>`,
+        to: TEST_EMAIL,
+        subject: `[DEBUG] Copie email boutique - ${subject}`,
+        text: textContent,
+        html: htmlContent,
+      };
+
+      const debugInfo = await transporter.sendMail(debugOptions);
+      debugMessageId = debugInfo.messageId;
+      console.log('🧪 Email DEBUG envoyé vers TEST_EMAIL:', debugMessageId);
+    }
+
     return res.status(200).json({
       success: true,
       messageId: info.messageId,
       shopEmail: shopEmail,
+      debugMessageId: debugMessageId,
     });
   } catch (error: any) {
     console.error('Error sending email:', error);
