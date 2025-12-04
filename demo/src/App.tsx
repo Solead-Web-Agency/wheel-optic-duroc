@@ -326,6 +326,7 @@ export default function App() {
   const [rotationAngle, setRotationAngle] = useState(0);
   const [showWinnerPopup, setShowWinnerPopup] = useState(false);
   const [lastWon, setLastWon] = useState<WheelSegment | null>(null);
+  const [showHowItWorks, setShowHowItWorks] = useState(false);
 
   // Étape email (obligatoire avant la boutique)
   const [firstName, setFirstName] = useState<string>(() => {
@@ -891,6 +892,44 @@ export default function App() {
         </div>
       )}
 
+      {/* Bouton "Comment ça marche ?" */}
+      <button
+        onClick={() => setShowHowItWorks(true)}
+        style={{
+          position: 'absolute',
+          top: '10px',
+          right: '10px',
+          width: '40px',
+          height: '40px',
+          borderRadius: '50%',
+          background: 'linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%)',
+          color: '#FFD700',
+          border: '2px solid #FFD700',
+          cursor: 'pointer',
+          fontSize: '1.5rem',
+          fontWeight: 'bold',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxShadow: '0 4px 15px rgba(0, 0, 0, 0.4), 0 0 15px rgba(255, 215, 0, 0.3)',
+          transition: 'all 0.3s ease',
+          zIndex: 1000,
+        }}
+        onMouseOver={(e) => {
+          e.currentTarget.style.transform = 'scale(1.1)';
+          e.currentTarget.style.boxShadow = '0 6px 25px rgba(0, 0, 0, 0.5), 0 0 25px rgba(255, 215, 0, 0.6)';
+          e.currentTarget.style.background = 'linear-gradient(135deg, #2d2d2d 0%, #3a3a3a 50%, #2d2d2d 100%)';
+        }}
+        onMouseOut={(e) => {
+          e.currentTarget.style.transform = 'scale(1)';
+          e.currentTarget.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.4), 0 0 15px rgba(255, 215, 0, 0.3)';
+          e.currentTarget.style.background = 'linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%)';
+        }}
+        title="Comment ça marche ?"
+      >
+        ?
+      </button>
+
       {/* Zone cliquable invisible pour activer le mode admin */}
       <div
         onClick={handleCornerClick}
@@ -901,7 +940,7 @@ export default function App() {
           width: '60px',
           height: '60px',
           cursor: 'pointer',
-          zIndex: 1000,
+          zIndex: 999,
           background: clickCount > 0 ? `rgba(255, 255, 255, ${clickCount * 0.1})` : 'transparent',
           borderRadius: '0 0 0 50px',
         }}
@@ -1191,6 +1230,231 @@ export default function App() {
           >
             Masquer
           </button>
+        </div>
+      )}
+
+      {/* Modal "Comment ça marche ?" */}
+      {showHowItWorks && (
+        <div
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '480px',
+            height: '520px',
+            background: 'rgba(0,0,0,0.9)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 3000,
+          }}
+          onClick={() => setShowHowItWorks(false)}
+        >
+          <div
+            style={{
+              background: 'linear-gradient(135deg, #1a1a1a, #2d2d2d)',
+              padding: '28px',
+              borderRadius: '20px',
+              color: '#fff',
+              textAlign: 'left',
+              width: '400px',
+              maxWidth: '90%',
+              boxShadow: '0 25px 70px rgba(0,0,0,0.7), 0 0 40px rgba(255, 215, 0, 0.2)',
+              border: '2px solid #FFD700',
+              maxHeight: '90%',
+              overflowY: 'auto',
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '28px', paddingBottom: '20px', borderBottom: '2px solid rgba(255, 215, 0, 0.3)' }}>
+              <h2 style={{ fontSize: '2rem', color: '#FFD700', margin: 0, fontWeight: 'bold', textShadow: '0 0 10px rgba(255, 215, 0, 0.5)' }}>Comment ça marche ?</h2>
+              <button
+                onClick={() => setShowHowItWorks(false)}
+                style={{
+                  background: 'rgba(255, 215, 0, 0.1)',
+                  border: '1px solid #FFD700',
+                  color: '#FFD700',
+                  fontSize: '1.8rem',
+                  cursor: 'pointer',
+                  padding: 0,
+                  width: '36px',
+                  height: '36px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  lineHeight: 1,
+                  borderRadius: '50%',
+                  transition: 'all 0.3s ease',
+                  boxShadow: '0 4px 15px rgba(0, 0, 0, 0.4), 0 0 15px rgba(255, 215, 0, 0.3)',
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.transform = 'scale(1.1)';
+                  e.currentTarget.style.boxShadow = '0 6px 25px rgba(0, 0, 0, 0.5), 0 0 25px rgba(255, 215, 0, 0.6)';
+                  e.currentTarget.style.background = 'rgba(255, 215, 0, 0.2)';
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.transform = 'scale(1)';
+                  e.currentTarget.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.4), 0 0 15px rgba(255, 215, 0, 0.3)';
+                  e.currentTarget.style.background = 'rgba(255, 215, 0, 0.1)';
+                }}
+              >
+                ×
+              </button>
+            </div>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '24px' }}>
+              <div style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: '16px',
+                padding: '16px',
+                background: 'rgba(255, 215, 0, 0.05)',
+                borderRadius: '12px',
+                border: '1px solid rgba(255, 215, 0, 0.2)',
+                transition: 'all 0.3s ease',
+              }}>
+                <div style={{
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '50%',
+                  background: 'linear-gradient(135deg, #FFD700, #FFA500)',
+                  color: '#1a1a1a',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontWeight: 'bold',
+                  fontSize: '1.2rem',
+                  flexShrink: 0,
+                  boxShadow: '0 4px 15px rgba(255, 215, 0, 0.4)',
+                }}>
+                  1
+                </div>
+                <div style={{ fontSize: '1.1rem', color: '#FFD700', fontWeight: '600', flex: 1 }}>
+                  Entrez votre e-mail
+                </div>
+              </div>
+              
+              <div style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: '16px',
+                padding: '16px',
+                background: 'rgba(255, 215, 0, 0.05)',
+                borderRadius: '12px',
+                border: '1px solid rgba(255, 215, 0, 0.2)',
+              }}>
+                <div style={{
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '50%',
+                  background: 'linear-gradient(135deg, #FFD700, #FFA500)',
+                  color: '#1a1a1a',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontWeight: 'bold',
+                  fontSize: '1.2rem',
+                  flexShrink: 0,
+                  boxShadow: '0 4px 15px rgba(255, 215, 0, 0.4)',
+                }}>
+                  2
+                </div>
+                <div style={{ fontSize: '1.1rem', color: '#FFD700', fontWeight: '600', flex: 1 }}>
+                  Choisissez la boutique la plus proche de chez vous
+                </div>
+              </div>
+              
+              <div style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: '16px',
+                padding: '16px',
+                background: 'rgba(255, 215, 0, 0.05)',
+                borderRadius: '12px',
+                border: '1px solid rgba(255, 215, 0, 0.2)',
+              }}>
+                <div style={{
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '50%',
+                  background: 'linear-gradient(135deg, #FFD700, #FFA500)',
+                  color: '#1a1a1a',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontWeight: 'bold',
+                  fontSize: '1.2rem',
+                  flexShrink: 0,
+                  boxShadow: '0 4px 15px rgba(255, 215, 0, 0.4)',
+                }}>
+                  3
+                </div>
+                <div style={{ fontSize: '1.1rem', color: '#FFD700', fontWeight: '600', flex: 1 }}>
+                  Tournez la roue
+                </div>
+              </div>
+              
+              <div style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: '16px',
+                padding: '16px',
+                background: 'rgba(255, 215, 0, 0.05)',
+                borderRadius: '12px',
+                border: '1px solid rgba(255, 215, 0, 0.2)',
+              }}>
+                <div style={{
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '50%',
+                  background: 'linear-gradient(135deg, #FFD700, #FFA500)',
+                  color: '#1a1a1a',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontWeight: 'bold',
+                  fontSize: '1.2rem',
+                  flexShrink: 0,
+                  boxShadow: '0 4px 15px rgba(255, 215, 0, 0.4)',
+                }}>
+                  4
+                </div>
+                <div style={{ fontSize: '1.1rem', color: '#FFD700', fontWeight: '600', flex: 1 }}>
+                  Venez récupérer votre cadeau en magasin !
+                </div>
+              </div>
+            </div>
+              
+            <div style={{ 
+              marginBottom: '24px', 
+              padding: '20px', 
+              background: 'linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 165, 0, 0.1))',
+              borderRadius: '12px', 
+              border: '2px solid rgba(255, 215, 0, 0.4)',
+              textAlign: 'center',
+            }}>
+              <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#FFD700', textShadow: '0 0 10px rgba(255, 215, 0, 0.5)' }}>
+                Un cadeau pour célébrer les fêtes de fin d'année !
+              </div>
+            </div>
+              
+            <div style={{ 
+              fontSize: '0.8rem', 
+              color: '#9ca3af', 
+              lineHeight: '1.7', 
+              padding: '16px', 
+              background: 'rgba(0, 0, 0, 0.3)',
+              borderRadius: '10px',
+              border: '1px solid rgba(255, 215, 0, 0.15)',
+            }}>
+              <div style={{ marginBottom: '8px', color: '#d1d5db', fontWeight: '500' }}>
+                En tournant la roue, je confirme accepter le règlement du jeu et accepte de m'inscrire à la newsletter Optic Duroc.
+              </div>
+              <div style={{ color: '#9ca3af', fontStyle: 'italic' }}>
+                Désabonnement possible à tout moment.
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
