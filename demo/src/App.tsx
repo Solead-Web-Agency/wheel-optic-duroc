@@ -188,6 +188,21 @@ const festivalConfigs = {
   },
 };
 
+// Libellés avec déterminant (pour popup + email uniquement, pas pour la roue)
+const segmentEmailLabels: { [id: number]: string } = {
+  1: 'un stylo',
+  2: 'un tote bag',
+  3: 'une trousse de voyage',
+  4: 'un chargeur',
+  5: 'un baume à lèvres',
+  6: 'un porte-carte',
+  7: 'un spray',
+  8: 'un haut-parleur',
+  9: 'des chainettes',
+  10: 'un masque',
+  11: 'un étui souple',
+};
+
 const DEFAULT_STOCK: StockMap = { 1: 1500, 2: 350, 3: 300 };
 
 // Roue canvas (texte en long comme sur l'exemple)
@@ -224,11 +239,11 @@ function SegmentedWheel({ segments, rotationAngle, festival }: {
     ctx.translate(-centerX, -centerY);
 
     const segmentAngle = (2 * Math.PI) / segments.length;
-
+    
     segments.forEach((segment, index) => {
       const startAngle = -Math.PI / 2 + index * segmentAngle;
       const endAngle = startAngle + segmentAngle;
-
+      
       // Quartier - utiliser directement les couleurs définies dans la config
       ctx.beginPath();
       ctx.moveTo(centerX, centerY);
@@ -236,7 +251,7 @@ function SegmentedWheel({ segments, rotationAngle, festival }: {
       ctx.closePath();
       ctx.fillStyle = segment.color;
       ctx.fill();
-
+      
       ctx.strokeStyle = '#B8932F';
       ctx.lineWidth = 2;
       ctx.stroke();
@@ -248,7 +263,7 @@ function SegmentedWheel({ segments, rotationAngle, festival }: {
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillStyle = segment.textColor;
-
+      
       // Taille de police auto pour tenir dans la largeur du quartier
       const baseSize = 15;
       let fontSize = baseSize;
@@ -281,32 +296,32 @@ function SegmentedWheel({ segments, rotationAngle, festival }: {
   return (
     <div
       style={{
-        width: '400px',
-        height: '400px',
+      width: '400px', 
+      height: '400px', 
         margin: 0,
-        position: 'relative',
-        display: 'flex',
-        alignItems: 'center',
+      position: 'relative',
+      display: 'flex',
+      alignItems: 'center',
         justifyContent: 'center',
       }}
     >
       {/* Flèche */}
       <div
         style={{
-          position: 'absolute',
-          top: '10px',
-          left: '50%',
-          transform: 'translateX(-50%)',
+        position: 'absolute',
+        top: '10px',
+        left: '50%',
+        transform: 'translateX(-50%)',
           width: 0,
           height: 0,
-          borderLeft: '20px solid transparent',
-          borderRight: '20px solid transparent',
+        borderLeft: '20px solid transparent',
+        borderRight: '20px solid transparent',
           borderTop: `30px solid ${festivalConfigs[festival].colors.primary}`,
-          zIndex: 10,
+        zIndex: 10,
           filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.5))',
         }}
       />
-
+      
       <canvas
         ref={canvasRef}
         style={{
@@ -540,7 +555,7 @@ export default function App() {
     const selectedIndex = Math.floor(Math.random() * segments.length);
     const selectedSegment = segments[selectedIndex];
     const selectedId = selectedSegment.id;
-
+    
     const calculerAngleCible = (): number => {
       const nombreSegments = segments.length;
       const segmentAngles: number[] = [];
@@ -556,7 +571,7 @@ export default function App() {
       for (let i = 0; i < selectedIndex; i++) currentAngle += segmentAngles[i];
       return currentAngle + segmentAngles[selectedIndex] / 2;
     };
-
+    
     const targetAngleForFlèche = calculerAngleCible();
     const flechePosition = -90;
     const rotationNeeded = -(targetAngleForFlèche - flechePosition);
@@ -569,7 +584,7 @@ export default function App() {
       const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
       const currentRotation = easeOut(progress) * totalRotation;
       setRotationAngle(currentRotation);
-
+      
       if (progress < 1) requestAnimationFrame(animate);
       else setTimeout(() => {
         setSpinning(false);
@@ -610,7 +625,7 @@ export default function App() {
             // pas de fallback local
           } finally {
             setLastWon(selectedSegment);
-            setShowWinnerPopup(true);
+          setShowWinnerPopup(true);
             
             // Envoyer un email à la boutique
             (async () => {
@@ -634,6 +649,7 @@ export default function App() {
             // Envoyer un email au client (gagnant) via Dialog Insight
             (async () => {
               try {
+                const lotLabelForEmail = segmentEmailLabels[selectedSegment.id] || selectedSegment.title;
                 await fetch('/api/notify-client', {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
@@ -643,7 +659,7 @@ export default function App() {
                     email,
                     shopName: shopNames[shopId] || shopId,
                     shopUrl: shopUrls[shopId] || 'https://opticduroc.com',
-                    segmentTitle: selectedSegment.title,
+                    segmentTitle: lotLabelForEmail,
                   }),
                 });
               } catch (err) {
@@ -655,7 +671,7 @@ export default function App() {
         })();
       }, 300);
     };
-
+    
     requestAnimationFrame(animate);
   };
 
@@ -664,7 +680,7 @@ export default function App() {
       className="app-container"
       style={{
         padding: 0,
-        position: 'relative',
+      position: 'relative',
         width: '480px',
         height: '520px',
         background: 'transparent',
@@ -675,21 +691,21 @@ export default function App() {
       {/* Étape 1 : saisie de l'email (overlay uniquement sur la zone de la roue) */}
       {!emailValidated && (
         <div
-          style={{
-            position: 'absolute',
-            top: 0,
+        style={{
+          position: 'absolute',
+          top: 0,
             left: 0,
             width: '400px',
             height: '400px',
             background: 'transparent',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
+          display: 'flex', 
+          alignItems: 'center',
+          justifyContent: 'center',
             zIndex: 2100,
           }}
         >
           <div
-            style={{
+            style={{ 
               background: 'linear-gradient(135deg, #1a1a1a, #2d2d2d)',
               padding: '24px',
               borderRadius: '16px',
@@ -763,17 +779,17 @@ export default function App() {
                 {emailError}
               </div>
             )}
-            <button
+              <button 
               onClick={handleEmailValidation}
               disabled={isCheckingEmail}
-              style={{
+                style={{
                 background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF6B35 100%)',
-                color: 'white',
-                border: 'none',
+                  color: 'white',
+                  border: 'none',
                 padding: '12px 28px',
                 borderRadius: '50px',
                 fontSize: '1.1rem',
-                fontWeight: 'bold',
+                  fontWeight: 'bold',
                 cursor: isCheckingEmail ? 'wait' : 'pointer',
                 boxShadow: '0 8px 25px rgba(0, 0, 0, 0.3), 0 0 20px rgba(255, 215, 0, 0.5)',
                 transition: 'all 0.3s ease',
@@ -783,7 +799,7 @@ export default function App() {
               }}
             >
               {isCheckingEmail ? 'Vérification…' : 'Valider'}
-            </button>
+              </button>
           </div>
         </div>
       )}
@@ -849,19 +865,19 @@ export default function App() {
                 );
               })}
             </select>
-            <button
+              <button 
               onClick={handleShopValidation}
               disabled={!shopId}
-              style={{
+                style={{
                 background: shopId
                   ? 'linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF6B35 100%)'
                   : '#555',
-                color: 'white',
-                border: 'none',
+                  color: 'white',
+                  border: 'none',
                 padding: '14px 32px',
                 borderRadius: '50px',
                 fontSize: '1.1rem',
-                fontWeight: 'bold',
+                  fontWeight: 'bold',
                 cursor: shopId ? 'pointer' : 'not-allowed',
                 boxShadow: shopId
                   ? '0 8px 25px rgba(0, 0, 0, 0.3), 0 0 20px rgba(255, 215, 0, 0.5)'
@@ -887,28 +903,28 @@ export default function App() {
               }}
             >
               Valider
-            </button>
+              </button>
           </div>
-        </div>
-      )}
+            </div>
+          )}
 
       {/* Bouton "Comment ça marche ?" */}
-      <button
+              <button 
         onClick={() => setShowHowItWorks(true)}
-        style={{
+                style={{
           position: 'absolute',
           top: emailValidated && !showShopSelection && shopId ? '470px' : '410px',
           left: '200px',
           transform: 'translateX(-50%)',
-          width: '40px',
           height: '40px',
-          borderRadius: '50%',
+          padding: '0 16px',
+          borderRadius: '999px',
           background: 'linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%)',
           color: '#FFD700',
           border: '2px solid #FFD700',
           cursor: 'pointer',
           fontSize: '1.5rem',
-          fontWeight: 'bold',
+                  fontWeight: 'bold',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -928,8 +944,9 @@ export default function App() {
         }}
         title="Comment ça marche ?"
       >
-        ?
-      </button>
+        <span style={{ fontSize: '0.9rem', marginRight: '6px' }}>Comment ça marche</span>
+        <span style={{ fontSize: '1.3rem', lineHeight: 1 }}>?</span>
+              </button>
 
       {/* Zone cliquable invisible pour activer le mode admin */}
       <div
@@ -951,9 +968,9 @@ export default function App() {
       <div className="wheel-container" style={{ position: 'absolute', top: 0, left: 0 }}>
         {/* Bouton pour changer de boutique (visible pour tous) */}
         {emailValidated && !showShopSelection && shopId && (
-          <button
+              <button 
             onClick={() => setShowShopSelection(true)}
-            style={{
+                style={{
               position: 'absolute',
               top: '420px',
               left: '50%',
@@ -964,7 +981,7 @@ export default function App() {
               padding: '10px 20px 10px 16px',
               borderRadius: '30px',
               cursor: 'pointer',
-              fontWeight: 'bold',
+                  fontWeight: 'bold',
               fontSize: '0.8rem',
               boxShadow: '0 4px 15px rgba(0, 0, 0, 0.4), 0 0 15px rgba(255, 215, 0, 0.3)',
               transition: 'all 0.3s ease',
@@ -998,7 +1015,7 @@ export default function App() {
               display: 'inline-block',
               transition: 'transform 0.3s ease',
             }}>▼</span>
-          </button>
+              </button>
         )}
         <div
           style={{
@@ -1008,51 +1025,51 @@ export default function App() {
             pointerEvents: showShopSelection ? 'none' : 'auto',
           }}
         >
-          <SegmentedWheel
+            <SegmentedWheel
             segments={availableSegments}
-            rotationAngle={rotationAngle}
-            festival={festival}
-          />
-        </div>
-
-        {!spinning && (
-          <button
+              rotationAngle={rotationAngle}
+              festival={festival}
+            />
+          </div>
+          
+          {!spinning && (
+            <button 
             onClick={spinWheel}
             disabled={!shopId || showShopSelection || !emailValidated}
-            className="spin-button"
-            style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              fontSize: '1.1rem',
-              padding: '15px 25px',
+              className="spin-button"
+              style={{ 
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                fontSize: '1.1rem',
+                padding: '15px 25px',
               background: !shopId || showShopSelection || !emailValidated
                 ? 'linear-gradient(135deg, #555 0%, #333 50%, #222 100%)'
                 : 'linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF6B35 100%)',
-              color: 'white',
-              border: 'none',
-              borderRadius: '50px',
-              fontWeight: 'bold',
+                color: 'white',
+                border: 'none',
+                borderRadius: '50px',
+                fontWeight: 'bold',
               cursor: !shopId || showShopSelection || !emailValidated ? 'not-allowed' : 'pointer',
               boxShadow: !shopId || showShopSelection || !emailValidated
                 ? 'none'
                 : '0 8px 25px rgba(0, 0, 0, 0.3), 0 0 20px rgba(255, 215, 0, 0.5)',
-              zIndex: 10,
-              transition: 'all 0.3s ease',
-              textShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)',
+                zIndex: 10,
+                transition: 'all 0.3s ease',
+                textShadow: '1px 1px 3px rgba(0, 0, 0, 0.5)',
               minWidth: '180px',
               opacity: !shopId || showShopSelection || !emailValidated ? 0.6 : 1,
-            }}
-            onMouseOver={(e) => {
+              }}
+              onMouseOver={(e) => {
               if (shopId && !showShopSelection && emailValidated) {
                 e.currentTarget.style.transform =
                   'translate(-50%, -50%) scale(1.1)';
                 e.currentTarget.style.boxShadow =
                   '0 12px 35px rgba(0, 0, 0, 0.4), 0 0 30px rgba(255, 215, 0, 0.8)';
               }
-            }}
-            onMouseOut={(e) => {
+              }}
+              onMouseOut={(e) => {
               if (shopId && !showShopSelection && emailValidated) {
                 e.currentTarget.style.transform = 'translate(-50%, -50%) scale(1)';
                 e.currentTarget.style.boxShadow =
@@ -1065,10 +1082,10 @@ export default function App() {
               : !shopId || showShopSelection
               ? 'Sélectionnez une boutique'
               : 'TENTER SA CHANCE'}
-          </button>
-        )}
-
-        {spinning && (
+            </button>
+          )}
+          
+          {spinning && (
           <div
             style={{
               position: 'absolute',
@@ -1087,22 +1104,22 @@ export default function App() {
             }}
           >
             Tirage en cours...
-          </div>
-        )}
-      </div>
+            </div>
+          )}
+        </div>
 
       {/* Panneau admin minimal */}
       {showAdminInterface && (
         <div
           style={{
-            position: 'fixed',
-            bottom: '10px',
-            right: '10px',
+          position: 'fixed', 
+          bottom: '10px', 
+          right: '10px', 
             background: 'rgba(0,0,0,0.85)',
-            color: 'white',
+          color: 'white', 
             padding: '12px',
-            borderRadius: '10px',
-            fontSize: '12px',
+          borderRadius: '10px',
+          fontSize: '12px',
             width: '260px',
             zIndex: 1001,
           }}
@@ -1167,21 +1184,21 @@ export default function App() {
           </div>
 
           <div style={{ display: 'flex', gap: '8px', marginTop: '10px' }}>
-            <button
+          <button 
               onClick={resetWheel}
-              style={{
+            style={{ 
                 background: 'linear-gradient(to right, #6b7280, #374151)',
                 color: '#fff',
-                border: 'none',
+              border: 'none', 
                 padding: '8px 12px',
                 borderRadius: '8px',
-                cursor: 'pointer',
+              cursor: 'pointer',
                 fontWeight: 'bold',
                 flex: 1,
-              }}
-            >
+            }}
+          >
               Reset roue
-            </button>
+          </button>
             <button
               onClick={resetWins}
               style={{
@@ -1197,15 +1214,15 @@ export default function App() {
             >
               Reset gains
             </button>
-          </div>
-          <button
+              </div>
+          <button 
             onClick={resetStock}
-            style={{
+            style={{ 
               width: '100%',
               marginTop: '8px',
               background: 'linear-gradient(to right, #10b981, #047857)',
               color: '#fff',
-              border: 'none',
+              border: 'none', 
               padding: '8px 12px',
               borderRadius: '8px',
               cursor: 'pointer',
@@ -1230,7 +1247,7 @@ export default function App() {
             }}
           >
             Masquer
-          </button>
+          </button>          
         </div>
       )}
 
@@ -1244,9 +1261,9 @@ export default function App() {
             width: '400px',
             height: '400px',
             background: 'rgba(0,0,0,0.9)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
             zIndex: 3000,
           }}
           onClick={() => setShowHowItWorks(false)}
@@ -1255,7 +1272,7 @@ export default function App() {
             style={{
               background: 'linear-gradient(135deg, #1a1a1a, #2d2d2d)',
               padding: '20px',
-              borderRadius: '20px',
+            borderRadius: '20px',
               color: '#fff',
               textAlign: 'left',
               width: '360px',
@@ -1302,20 +1319,20 @@ export default function App() {
               >
                 ×
               </button>
-            </div>
+          </div>
             
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '16px' }}>
               <div style={{ 
-                display: 'flex', 
-                alignItems: 'center', 
+          display: 'flex',
+          alignItems: 'center',
                 gap: '12px',
                 padding: '12px',
                 background: 'rgba(255, 215, 0, 0.05)',
                 borderRadius: '10px',
                 border: '1px solid rgba(255, 215, 0, 0.2)',
                 transition: 'all 0.3s ease',
-              }}>
-                <div style={{
+        }}>
+          <div style={{
                   width: '32px',
                   height: '32px',
                   borderRadius: '50%',
@@ -1336,7 +1353,7 @@ export default function App() {
                 </div>
               </div>
               
-              <div style={{ 
+            <div style={{
                 display: 'flex', 
                 alignItems: 'center', 
                 gap: '12px',
@@ -1360,7 +1377,7 @@ export default function App() {
                   boxShadow: '0 4px 15px rgba(255, 215, 0, 0.4)',
                 }}>
                   2
-                </div>
+            </div>
                 <div style={{ fontSize: '0.95rem', color: '#FFD700', fontWeight: '600', flex: 1 }}>
                   Choisissez la boutique la plus proche de chez vous
                 </div>
@@ -1384,17 +1401,17 @@ export default function App() {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontWeight: 'bold',
+                    fontWeight: 'bold',
                   fontSize: '1rem',
                   flexShrink: 0,
                   boxShadow: '0 4px 15px rgba(255, 215, 0, 0.4)',
                 }}>
                   3
-                </div>
+              </div>
                 <div style={{ fontSize: '0.95rem', color: '#FFD700', fontWeight: '600', flex: 1 }}>
                   Tournez la roue
-                </div>
-              </div>
+          </div>
+        </div>
               
               <div style={{ 
                 display: 'flex', 
@@ -1411,9 +1428,9 @@ export default function App() {
                   borderRadius: '50%',
                   background: 'linear-gradient(135deg, #FFD700, #FFA500)',
                   color: '#1a1a1a',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
                   fontWeight: 'bold',
                   fontSize: '1rem',
                   flexShrink: 0,
@@ -1427,13 +1444,13 @@ export default function App() {
               </div>
             </div>
               
-            <div style={{ 
+          <div style={{
               marginBottom: '12px', 
               padding: '14px', 
               background: 'linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 165, 0, 0.1))',
               borderRadius: '10px', 
               border: '2px solid rgba(255, 215, 0, 0.4)',
-              textAlign: 'center',
+            textAlign: 'center',
               flexShrink: 0,
             }}>
               <div style={{ fontSize: '1rem', fontWeight: 'bold', color: '#FFD700', textShadow: '0 0 10px rgba(255, 215, 0, 0.5)' }}>
@@ -1441,7 +1458,7 @@ export default function App() {
               </div>
             </div>
               
-            <div style={{ 
+            <div style={{
               fontSize: '0.7rem', 
               color: '#9ca3af', 
               lineHeight: '1.6', 
@@ -1453,7 +1470,7 @@ export default function App() {
             }}>
               <div style={{ marginBottom: '6px', color: '#d1d5db', fontWeight: '500' }}>
                 En tournant la roue, je confirme accepter le règlement du jeu et accepte de m'inscrire à la newsletter Optic Duroc.
-              </div>
+            </div>
               <div style={{ color: '#9ca3af', fontStyle: 'italic' }}>
                 Désabonnement possible à tout moment.
               </div>
@@ -1472,9 +1489,9 @@ export default function App() {
             width: '400px',
             height: '400px',
             background: 'transparent',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
             zIndex: 1100,
           }}
         >
@@ -1484,7 +1501,7 @@ export default function App() {
               padding: '24px',
               borderRadius: '16px',
               color: '#fff',
-              textAlign: 'center',
+            textAlign: 'center',
               width: '340px',
               maxWidth: '90%',
               boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
@@ -1503,9 +1520,9 @@ export default function App() {
                 fontSize: '1.5rem',
               }}
             >
-              {lastWon.title}
+              {segmentEmailLabels[lastWon.id] || lastWon.title}
             </div>
-            <button
+            <button 
               onClick={() => {
                 setShowWinnerPopup(false);
                 // On revient à l'étape email pour le participant suivant
