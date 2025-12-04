@@ -10,7 +10,7 @@ const SMTP_USER = process.env.SMTP_USER || 'noreply@opticduroc.com';
 const SMTP_PASS = process.env.SMTP_PASS || '';
 const FROM_EMAIL = process.env.FROM_EMAIL || 'noreply@opticduroc.com';
 const FROM_NAME = process.env.FROM_NAME || 'Roue de la Fortune - Optic Duroc';
-const TEST_EMAIL = process.env.TEST_EMAIL || ''; // Si défini, tous les emails vont ici (mode test)
+const TEST_EMAIL = process.env.TEST_EMAIL || ''; // Si défini, envoi en CCI (copie cachée)
 
 // On tape req/res en any pour éviter d'ajouter la dépendance @vercel/node
 export default async function handler(req: any, res: any) {
@@ -48,7 +48,7 @@ export default async function handler(req: any, res: any) {
     }
 
     const shop = shops[0];
-    const shopEmail = TEST_EMAIL || shop.email; // Mode test : utilise TEST_EMAIL si défini
+    const shopEmail = shop.email; // Toujours envoyer à la boutique
     const shopName = shop.name;
 
     // 2. Récupérer les infos du participant (prénom, nom)
@@ -128,9 +128,7 @@ export default async function handler(req: any, res: any) {
     // 5. Composer l'email
     const participantName =
       firstName && lastName ? `${firstName} ${lastName}` : 'le participant';
-    const subject = `Nouveau gain à la roue - ${shopName}${
-      TEST_EMAIL ? ' [MODE TEST]' : ''
-    }`;
+    const subject = `Nouveau gain à la roue - ${shopName}`;
 
     const htmlContent = `
       <!DOCTYPE html>
@@ -158,14 +156,6 @@ export default async function handler(req: any, res: any) {
             <h1>Nouveau gain à la roue de la fortune</h1>
           </div>
           <div class="content">
-            ${
-              TEST_EMAIL
-                ? '<p style="background: #ff6b35; color: white; padding: 10px; border-radius: 5px; font-weight: bold;">⚠️ MODE TEST - Email de destination réelle : ' +
-                  shop.email +
-                  '</p>'
-                : ''
-            }
-            
             <p>Bonjour,</p>
             
             <p>Dans le cadre de l'opération commerciale en cours, un prospect — <strong>${participantName}</strong> — a gagné un <span class="highlight">${segmentTitle}</span> et a choisi votre boutique pour le récupérer.</p>
@@ -234,13 +224,20 @@ L'équipe Optic Duroc
     `;
 
     // 6. Envoyer l'email
-    const info = await transporter.sendMail({
+    const mailOptions: any = {
       from: `"${FROM_NAME}" <${FROM_EMAIL}>`,
       to: shopEmail,
       subject: subject,
       text: textContent,
       html: htmlContent,
-    });
+    };
+
+    // Ajouter TEST_EMAIL en CCI si défini
+    if (TEST_EMAIL) {
+      mailOptions.bcc = TEST_EMAIL;
+    }
+
+    const info = await transporter.sendMail(mailOptions);
 
     console.log('Email sent:', info.messageId);
 
